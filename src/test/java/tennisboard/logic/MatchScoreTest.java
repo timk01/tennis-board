@@ -25,14 +25,14 @@ class MatchScoreTest {
 
     @Test
     void checkInitialScores() {
-        int resultA = match.getMatchScore().getCurrentPointA();
-        int resultB = match.getMatchScore().getCurrentPointB();
+        int resultA = match.getMatchScore().getPointA();
+        int resultB = match.getMatchScore().getPointB();
 
         assertThat(resultA).isEqualTo(0);
         assertThat(resultB).isEqualTo(0);
 
-        assertThat(match.getMatchScore().getCurrentGameA()).isEqualTo(0);
-        assertThat(match.getMatchScore().getCurrentGameB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getGameA()).isEqualTo(0);
+        assertThat(match.getMatchScore().getGameB()).isEqualTo(0);
 
         assertThat(match.getMatchScore().getGameStatus()).isEqualTo(StatusOfGame.REGULAR_GAME);
 
@@ -53,14 +53,14 @@ class MatchScoreTest {
     void increasePointTo15ForSideAWorks() {
         match.getMatchScore().increasePoint(Side.A);
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(15);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(15);
     }
 
     @Test
     void increasePointTo15ForSideBWorks() {
         match.getMatchScore().increasePoint(Side.B);
 
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(15);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(15);
     }
 
     @Test
@@ -68,7 +68,7 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(30);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(30);
     }
 
     @Test
@@ -76,7 +76,7 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(30);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(30);
     }
 
     @Test
@@ -85,7 +85,7 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(40);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(40);
     }
 
     @Test
@@ -94,7 +94,7 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(40);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(40);
     }
 
     @Test
@@ -103,8 +103,8 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(40);
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(40);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(0);
     }
 
     @Test
@@ -113,8 +113,8 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(40);
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(0);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(40);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(0);
     }
 
     @Test
@@ -124,10 +124,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(gameResultA).isEqualTo(1);
         assertThat(gameResultB).isEqualTo(0);
@@ -142,10 +142,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(1);
@@ -164,10 +164,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(gameResultA).isEqualTo(1);
         assertThat(gameResultB).isEqualTo(0);
@@ -187,10 +187,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(1);
@@ -209,10 +209,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -233,10 +233,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -257,10 +257,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -282,10 +282,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(0);
         assertThat(pointResultB).isEqualTo(0);
@@ -307,10 +307,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(0);
         assertThat(pointResultB).isEqualTo(0);
@@ -332,10 +332,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -357,10 +357,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -383,10 +383,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(40);
         assertThat(pointResultB).isEqualTo(40);
@@ -411,10 +411,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int pointResultA = match.getMatchScore().getCurrentPointA();
-        int pointResultB = match.getMatchScore().getCurrentPointB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int pointResultA = match.getMatchScore().getPointA();
+        int pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(0);
         assertThat(pointResultB).isEqualTo(0);
@@ -424,9 +424,9 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        pointResultA = match.getMatchScore().getCurrentPointA();
-        pointResultB = match.getMatchScore().getCurrentPointB();
+        gameResultB = match.getMatchScore().getGameB();
+        pointResultA = match.getMatchScore().getPointA();
+        pointResultB = match.getMatchScore().getPointB();
 
         assertThat(pointResultA).isEqualTo(15);
         assertThat(pointResultB).isEqualTo(0);
@@ -441,10 +441,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameACountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -460,10 +460,10 @@ class MatchScoreTest {
         increaseGameBCountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -481,10 +481,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameACountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -502,10 +502,10 @@ class MatchScoreTest {
         increaseGameBCountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -522,10 +522,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -542,10 +542,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -562,10 +562,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -582,10 +582,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -602,10 +602,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -629,10 +629,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -649,10 +649,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -676,10 +676,10 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.B);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -696,10 +696,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -724,15 +724,13 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.A);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
-        assertThat(match.getMatchScore().getTieBreakA()).isEqualTo(7);
-        assertThat(match.getMatchScore().getTieBreakB()).isEqualTo(6);
         assertThat(setResultA).isEqualTo(0);
         assertThat(setResultB).isEqualTo(0);
     }
@@ -746,10 +744,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -774,15 +772,13 @@ class MatchScoreTest {
 
         match.getMatchScore().increasePoint(Side.B);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
-        assertThat(match.getMatchScore().getTieBreakA()).isEqualTo(6);
-        assertThat(match.getMatchScore().getTieBreakB()).isEqualTo(7);
         assertThat(setResultA).isEqualTo(0);
         assertThat(setResultB).isEqualTo(0);
     }
@@ -796,10 +792,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -828,10 +824,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -848,10 +844,10 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameBCountOnOne();
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(6);
         assertThat(gameResultB).isEqualTo(6);
@@ -880,10 +876,10 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.B);
         match.getMatchScore().increasePoint(Side.B);
 
-        gameResultA = match.getMatchScore().getCurrentGameA();
-        gameResultB = match.getMatchScore().getCurrentGameB();
-        setResultA = match.getMatchScore().getCurrentSetA();
-        setResultB = match.getMatchScore().getCurrentSetB();
+        gameResultA = match.getMatchScore().getGameA();
+        gameResultB = match.getMatchScore().getGameB();
+        setResultA = match.getMatchScore().getSetA();
+        setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
@@ -908,30 +904,26 @@ class MatchScoreTest {
         match.getMatchScore().increasePoint(Side.A);
         match.getMatchScore().increasePoint(Side.A);
 
-        int gameResultA = match.getMatchScore().getCurrentGameA();
-        int gameResultB = match.getMatchScore().getCurrentGameB();
-        int setResultA = match.getMatchScore().getCurrentSetA();
-        int setResultB = match.getMatchScore().getCurrentSetB();
+        int gameResultA = match.getMatchScore().getGameA();
+        int gameResultB = match.getMatchScore().getGameB();
+        int setResultA = match.getMatchScore().getSetA();
+        int setResultB = match.getMatchScore().getSetB();
 
         assertThat(gameResultA).isEqualTo(0);
         assertThat(gameResultB).isEqualTo(0);
         assertThat(setResultA).isEqualTo(1);
         assertThat(setResultB).isEqualTo(0);
-        assertThat(match.getMatchScore().getTieBreakA()).isEqualTo(0);
-        assertThat(match.getMatchScore().getTieBreakB()).isEqualTo(0);
         assertThat(match.getMatchScore().getStatusOfSet()).isEqualTo(StatusOfSet.REGULAR_SET);
 
         match.getMatchScore().increasePoint(Side.A);
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(15);
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(0);
-        assertThat( match.getMatchScore().getCurrentGameA()).isEqualTo(0);
-        assertThat( match.getMatchScore().getCurrentGameB()).isEqualTo(0);
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(1);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(15);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(0);
+        assertThat( match.getMatchScore().getGameA()).isEqualTo(0);
+        assertThat( match.getMatchScore().getGameB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(1);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(0);
         assertThat(match.getMatchScore().getStatusOfSet()).isEqualTo(StatusOfSet.REGULAR_SET);
-        assertThat(match.getMatchScore().getTieBreakA()).isEqualTo(0);
-        assertThat(match.getMatchScore().getTieBreakB()).isEqualTo(0);
     }
 
     @Test
@@ -950,8 +942,8 @@ class MatchScoreTest {
         increaseGameBCountOnOne();
         increaseGameBCountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(1);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(1);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(1);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(1);
         assertThat(match.isFinished()).isFalse();
     }
 
@@ -971,8 +963,8 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameACountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(2);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(2);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(0);
         assertThat(match.isFinished()).isTrue();
         assertThat(match.getWinner()).isSameAs(first);
     }
@@ -993,8 +985,8 @@ class MatchScoreTest {
         increaseGameBCountOnOne();
         increaseGameBCountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(0);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(2);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(0);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(2);
         assertThat(match.isFinished()).isTrue();
         assertThat(match.getWinner()).isSameAs(second);
     }
@@ -1022,8 +1014,8 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameACountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(2);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(1);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(2);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(1);
         assertThat(match.isFinished()).isTrue();
     }
 
@@ -1050,8 +1042,8 @@ class MatchScoreTest {
         increaseGameBCountOnOne();
         increaseGameBCountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(1);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(2);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(1);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(2);
         assertThat(match.isFinished()).isTrue();
     }
 
@@ -1071,14 +1063,14 @@ class MatchScoreTest {
         increaseGameACountOnOne();
         increaseGameACountOnOne();
 
-        assertThat(match.getMatchScore().getCurrentSetA()).isEqualTo(2);
-        assertThat(match.getMatchScore().getCurrentSetB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getSetA()).isEqualTo(2);
+        assertThat(match.getMatchScore().getSetB()).isEqualTo(0);
         assertThat(match.isFinished()).isTrue();
 
         increaseGameACountTo4();
 
-        assertThat(match.getMatchScore().getCurrentPointA()).isEqualTo(0);
-        assertThat(match.getMatchScore().getCurrentPointB()).isEqualTo(0);
+        assertThat(match.getMatchScore().getPointA()).isEqualTo(0);
+        assertThat(match.getMatchScore().getPointB()).isEqualTo(0);
     }
 
     private void increaseGameACountTo4() {
