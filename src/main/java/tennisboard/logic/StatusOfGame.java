@@ -1,6 +1,6 @@
 package tennisboard.logic;
 
-public enum GameStatus {
+public enum StatusOfGame {
     REGULAR_GAME,
     ADVANTAGE_A,
     ADVANTAGE_B,
