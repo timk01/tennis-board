@@ -3,11 +3,11 @@ package tennisboard.logic;
 import java.util.List;
 
 public class MatchScore {
-    private static final int MINIMUM_ROUNDS_FOR_WIN = 4;
-    private static final int MINIMUM_ROUNDS_FOR_GETTING_ADVANTAGE = 1;
+    private static final int MINIMUM_ROUNDS_FOR_WIN_GAME = 4;
+    private static final int MINIMUM_ROUNDS_FOR_GETTING_GAME_ADVANTAGE = 1;
     private static final int MAXIMUM_NORMAL_ROUNDS = 3;
-    private static final int MINIMUM_GAMES_FOR_WIN = 6;
-    private static final int TIE_BREAK_START = 6;
+    private static final int MINIMUM_GAMES_FOR_WIN_SET = 6;
+    private static final int SET_TIE_BREAK_START = 6;
     private static final int MINIMUM_ROUNDS_TO_WIN_TIE_BREAK = 7;
     private static final int MINIMUM_ADVANTAGE = 2;
     private static final int MINIMUM_SETS_TO_WIN = 2;
@@ -20,11 +20,11 @@ public class MatchScore {
 
     private int gameA;
     private int gameB;
-    private StatusOfGame gameStatus = StatusOfGame.REGULAR_GAME;
+    private StatusOfGame statusOfGame = StatusOfGame.REGULAR_GAME;
 
     private int setA;
     private int setB;
-    private StatusOfSet setStatus = StatusOfSet.REGULAR_SET;
+    private StatusOfSet statusOfSet = StatusOfSet.REGULAR_SET;
 
     private boolean isMatchFinished;
     private Side winner;
@@ -101,11 +101,11 @@ public class MatchScore {
     }
 
     private void resetTieBreak() {
-        setStatus = StatusOfSet.REGULAR_SET;
+        statusOfSet = StatusOfSet.REGULAR_SET;
     }
 
     private boolean isRoundWon(int roundsWon, int opponentRoundsWon) {
-        return roundsWon >= MINIMUM_ROUNDS_FOR_WIN && (roundsWon - opponentRoundsWon >= MINIMUM_ADVANTAGE);
+        return roundsWon >= MINIMUM_ROUNDS_FOR_WIN_GAME && (roundsWon - opponentRoundsWon >= MINIMUM_ADVANTAGE);
     }
 
     private void processGameResult(Side side) {
@@ -129,15 +129,15 @@ public class MatchScore {
     }
 
     private boolean processTieBreakStart() {
-        if (gameA == TIE_BREAK_START && gameB == TIE_BREAK_START) {
-            setStatus = StatusOfSet.TIE_BREAK;
+        if (gameA == SET_TIE_BREAK_START && gameB == SET_TIE_BREAK_START) {
+            statusOfSet = StatusOfSet.TIE_BREAK;
             return true;
         }
         return false;
     }
 
     private boolean isSetWon(int gamesWon, int opponentGamesWon) {
-        return gamesWon >= MINIMUM_GAMES_FOR_WIN && (gamesWon - opponentGamesWon >= MINIMUM_ADVANTAGE);
+        return gamesWon >= MINIMUM_GAMES_FOR_WIN_SET && (gamesWon - opponentGamesWon >= MINIMUM_ADVANTAGE);
     }
 
     private void processMatchResult() {
@@ -155,7 +155,7 @@ public class MatchScore {
     }
 
     private void resetGame() {
-        gameStatus = StatusOfGame.REGULAR_GAME;
+        statusOfGame = StatusOfGame.REGULAR_GAME;
         roundA = 0;
         pointA = 0;
         roundB = 0;
@@ -169,16 +169,16 @@ public class MatchScore {
 
     private void updateGameStatus() {
         if (roundA < MAXIMUM_NORMAL_ROUNDS || roundB < MAXIMUM_NORMAL_ROUNDS) {
-            gameStatus = StatusOfGame.REGULAR_GAME;
+            statusOfGame = StatusOfGame.REGULAR_GAME;
             return;
         }
 
         if (roundA == roundB) {
-            gameStatus = StatusOfGame.DEUCE;
-        } else if (roundA - roundB == MINIMUM_ROUNDS_FOR_GETTING_ADVANTAGE) {
-            gameStatus = StatusOfGame.ADVANTAGE_A;
-        } else if (roundB - roundA == MINIMUM_ROUNDS_FOR_GETTING_ADVANTAGE) {
-            gameStatus = StatusOfGame.ADVANTAGE_B;
+            statusOfGame = StatusOfGame.DEUCE;
+        } else if (roundA - roundB == MINIMUM_ROUNDS_FOR_GETTING_GAME_ADVANTAGE) {
+            statusOfGame = StatusOfGame.ADVANTAGE_A;
+        } else if (roundB - roundA == MINIMUM_ROUNDS_FOR_GETTING_GAME_ADVANTAGE) {
+            statusOfGame = StatusOfGame.ADVANTAGE_B;
         }
     }
 
@@ -198,8 +198,8 @@ public class MatchScore {
         return gameB;
     }
 
-    public StatusOfGame getGameStatus() {
-        return gameStatus;
+    public StatusOfGame getStatusOfGame() {
+        return statusOfGame;
     }
 
     public int getSetA() {
@@ -211,12 +211,12 @@ public class MatchScore {
     }
 
     public StatusOfSet getStatusOfSet() {
-        return setStatus;
+        return statusOfSet;
     }
 
     public Side getWinner() {
         if (!isMatchFinished) {
-            throw new IllegalStateException("match isn't finished yet");
+            throw new IllegalStateException("Match isn't finished yet");
         }
 
         return winner;

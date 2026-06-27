@@ -3,9 +3,9 @@ package tennisboard.logic;
 import java.util.Optional;
 
 public class Match {
-    private Player player1;
-    private Player player2;
-    private MatchScore matchScore;
+    private final Player player1;
+    private final Player player2;
+    private final MatchScore matchScore;
 
     public Match(Player player1, Player player2, MatchScore matchScore) {
         this.player1 = player1;
@@ -27,6 +27,14 @@ public class Match {
             return player1;
         }
 
+        return player2;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
         return player2;
     }
 }
