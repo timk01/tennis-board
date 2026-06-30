@@ -1,4 +1,4 @@
-package tennisboard.logic;
+package tennisboard.service.logic;
 
 import java.util.List;
 

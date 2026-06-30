@@ -1,4 +1,4 @@
-package tennisboard.logic;
+package tennisboard.service.logic;
 
 public enum Side {
     A("player A"),

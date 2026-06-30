@@ -1,6 +1,4 @@
-package tennisboard.logic;
-
-import java.util.Optional;
+package tennisboard.service.logic;
 
 public class Match {
     private final Player player1;

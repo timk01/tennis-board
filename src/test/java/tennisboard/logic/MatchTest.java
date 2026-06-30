@@ -2,6 +2,10 @@ package tennisboard.logic;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tennisboard.service.logic.Match;
+import tennisboard.service.logic.MatchScore;
+import tennisboard.service.logic.Player;
+import tennisboard.service.logic.Side;
 
 import static org.assertj.core.api.Assertions.*;
 

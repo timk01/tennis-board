@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tennisboard.service.logic.MatchScore;
+import tennisboard.service.logic.Side;
+import tennisboard.service.logic.StatusOfGame;
+import tennisboard.service.logic.StatusOfSet;
 
 import java.util.List;
 import java.util.stream.Stream;

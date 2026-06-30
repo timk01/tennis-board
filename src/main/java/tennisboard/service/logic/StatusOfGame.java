@@ -1,4 +1,4 @@
-package tennisboard.logic;
+package tennisboard.service.logic;
 
 public enum StatusOfGame {
     REGULAR_GAME,
