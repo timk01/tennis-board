@@ -7,11 +7,14 @@ import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
 import tennisboard.service.logic.Side;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.*;
 
 class MatchTest {
     private static final int MINIMUM_GAMES_FOR_WIN_SET = 6;
 
+    private UUID uuid;
     private Player firstPlayer;
     private Player secondPlayer;
     private MatchScore matchScore;
@@ -19,10 +22,12 @@ class MatchTest {
 
     @BeforeEach
     void init() {
+        uuid = UUID.fromString("1d5e5fb4-5203-4933-8278-486f3d8db2ca");
         firstPlayer = new Player(1L, "Agasssi");
         secondPlayer = new Player(2L, "Federerr");
         matchScore = new MatchScore();
         match = new Match(
+                uuid,
                 this.firstPlayer,
                 this.secondPlayer,
                 matchScore);
