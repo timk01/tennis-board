@@ -136,6 +136,15 @@ public class MatchScore {
         return false;
     }
 
+    public Integer getTieBreakPointA() {
+        return statusOfSet == StatusOfSet.TIE_BREAK ? roundA : null;
+    }
+
+    public Integer getTieBreakPointB() {
+        return statusOfSet == StatusOfSet.TIE_BREAK ? roundB : null;
+    }
+
+
     private boolean isSetWon(int gamesWon, int opponentGamesWon) {
         return gamesWon >= MINIMUM_GAMES_FOR_WIN_SET && (gamesWon - opponentGamesWon >= MINIMUM_ADVANTAGE);
     }

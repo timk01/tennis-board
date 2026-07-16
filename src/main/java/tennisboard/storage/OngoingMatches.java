@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import tennisboard.service.logic.Match;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,15 +12,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OngoingMatches implements OngoingMatchesStorage {
     private final Map<UUID, Match> ongoingMatches = new ConcurrentHashMap<>();
 
-
     @Override
     public void save(Match match) {
-        ongoingMatches.put(match.getMatchId(), match);
+        Match exist = ongoingMatches.putIfAbsent(match.getMatchId(), match);
+
+        if (exist != null) {
+            throw new IllegalStateException(String.format(
+                    "Match with UUID %s already exists", match.getMatchId()
+            ));
+        }
     }
 
     @Override
-    public Match findById(UUID uuid) {
-        return ongoingMatches.get(uuid);
+    public Optional<Match> findById(UUID uuid) {
+        return Optional.ofNullable(ongoingMatches.get(uuid));
     }
 
     @Override
