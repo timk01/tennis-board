@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tennisboard.mapper.MatchResponseMapper;
 import tennisboard.request.CreateMatchRequest;
+import tennisboard.request.UpdateMatchRequest;
 import tennisboard.response.CreateMatchResponse;
 import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.MatchService;
@@ -47,17 +48,20 @@ public class MatchesController {
                 HttpStatus.OK);
     }
 
-/*    @PostMapping("/{uuid}/point")
-    public ResponseEntity<BigUglyStat> addPoint(@RequestBody Something playerName) { //something = record with fields, as i think
-        return new ResponseEntity<>(BigUglyStat, HttpStatus.OK);
+    @PostMapping("/{uuid}/point")
+    public ResponseEntity<MatchScoreResponse> addPoint(
+            @RequestBody UpdateMatchRequest request,
+            @PathVariable("uuid") UUID uuid
+    ) {
+        String name = request.name();
+        Match match = matchService.addPoint(name, uuid);
+
+        return new ResponseEntity<>(
+                mapper.toMatchScoreResponse(match),
+                HttpStatus.OK);
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<BigUglyStat> getMatchStats(@PathVariable UUID uuid) {
-        return new ResponseEntity<>(BigUglyStat, HttpStatus.OK);
-    }
-
-    @GetMapping
+/*    @GetMapping
     public ResponseEntity<finishedMatchesList> getFinishedMatches() {
         return new ResponseEntity<finishedMatchesList>();
     }*/

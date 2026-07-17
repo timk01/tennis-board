@@ -29,7 +29,7 @@ public class OngoingMatches implements OngoingMatchesStorage {
     }
 
     @Override
-    public void remove(UUID uuid) {
-        ongoingMatches.remove(uuid);
+    public void remove(UUID uuid, Match match) {
+        ongoingMatches.remove(uuid, match);
     }
 }

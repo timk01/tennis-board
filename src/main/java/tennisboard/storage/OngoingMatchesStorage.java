@@ -10,5 +10,5 @@ public interface OngoingMatchesStorage {
 
     Optional<Match> findById(UUID uuid);
 
-    void remove(UUID uuid);
+    void remove(UUID uuid, Match match);
 }
