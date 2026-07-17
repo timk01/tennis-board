@@ -27,18 +27,19 @@ public class MatchService {
             ));
         }
 
-        if (firstPlayerName.trim().equalsIgnoreCase(secondPlayerName.trim())) {
+        String normalizedFirstPlayerName = firstPlayerName.trim().toLowerCase();
+        String normalizedSecondPlayerName = secondPlayerName.trim().toLowerCase();
+        if (normalizedFirstPlayerName.equals(normalizedSecondPlayerName)) {
             throw new MatchValidationException(
                     "Names are the same!"
             );
         }
 
-
         UUID id = UUID.randomUUID();
         Match match = new Match(
                 id,
-                new Player(null, firstPlayerName),
-                new Player(null, secondPlayerName),
+                new Player(null, normalizedFirstPlayerName),
+                new Player(null, normalizedSecondPlayerName),
                 new MatchScore()
         );
 
