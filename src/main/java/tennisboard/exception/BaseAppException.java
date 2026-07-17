@@ -1,6 +1,6 @@
 package tennisboard.exception;
 
-public class BaseAppException extends RuntimeException {
+public abstract class BaseAppException extends RuntimeException {
     public BaseAppException(String message) {
         super(message);
     }

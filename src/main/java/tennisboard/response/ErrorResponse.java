@@ -1,4 +1,4 @@
 package tennisboard.response;
 
-public record ErrorResponse(String error) {
+public record ErrorResponse(String message) {
 }
