@@ -3,6 +3,7 @@ package tennisboard.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tennisboard.dto.MatchSnapshot;
 import tennisboard.mapper.MatchResponseMapper;
 import tennisboard.request.CreateMatchRequest;
 import tennisboard.request.UpdateMatchRequest;
@@ -10,8 +11,6 @@ import tennisboard.response.CreateMatchResponse;
 import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.MatchService;
 import tennisboard.service.logic.Match;
-import tennisboard.service.logic.StatusOfGame;
-import tennisboard.service.logic.StatusOfSet;
 
 import java.util.UUID;
 
@@ -41,10 +40,10 @@ public class MatchesController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<MatchScoreResponse> getMatchStats(@PathVariable("uuid") UUID uuid) {
-        Match match = matchService.getMatch(uuid);
+        MatchSnapshot snapshot = matchService.getMatchSnapshot(uuid);
 
         return new ResponseEntity<>(
-                mapper.toMatchScoreResponse(match),
+                mapper.toMatchScoreResponse(snapshot),
                 HttpStatus.OK);
     }
 
@@ -54,10 +53,10 @@ public class MatchesController {
             @PathVariable("uuid") UUID uuid
     ) {
         String name = request.name();
-        Match match = matchService.addPoint(name, uuid);
+        MatchSnapshot snapshot = matchService.addPoint(name, uuid);
 
         return new ResponseEntity<>(
-                mapper.toMatchScoreResponse(match),
+                mapper.toMatchScoreResponse(snapshot),
                 HttpStatus.OK);
     }
 

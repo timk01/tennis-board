@@ -2,8 +2,14 @@ package tennisboard.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import tennisboard.dto.MatchSnapshot;
 import tennisboard.exception.MatchIsNotFoundException;
 import tennisboard.exception.MatchValidationException;
+import tennisboard.mapper.MatchInternalMapper;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
@@ -14,15 +20,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MatchServiceTest {
+    @Mock
+    private MatchInternalMapper internalMapper;
     private OngoingMatchesStorage storage;
     private MatchService service;
 
     @BeforeEach
     void init() {
         storage = new OngoingMatches();
-        service = new MatchService(storage);
+        service = new MatchService(internalMapper, storage);
     }
 
     @Test
@@ -89,6 +99,19 @@ class MatchServiceTest {
                 .isInstanceOf(MatchValidationException.class);
     }
 
+    /**
+     * Здесь тестируется реальный MatchService.
+     * <p>
+     * Storage реальная, поэтому getMatchSnapshot(id) сможет найти Match по id - без проблем
+     * ЕЕ МОКАТЬ НЕ НАДО! (времянка - вполне себе реальна)
+     * Но internalMapper — mock, поэтому его метод toMatchSnapshot(...) сам по себе
+     * ничего не сконвертирует и по умолчанию вернёт null (тупо заглушка)
+     * <p>
+     * Поэтому заранее описываем поведение mock-а:
+     * когда internalMapper.toMatchSnapshot(match) будет вызван с этим Match (дойдет до него)
+     * вернуть заранее подготовленный expectedSnapshot.
+     * Который (соверщенно внезапно) внучную переложен из значимых полей
+     */
     @Test
     void getMatchSuccess() {
         String firstName = "Federer";
@@ -104,22 +127,40 @@ class MatchServiceTest {
 
         storage.save(match);
 
-        Match resultMatch = service.getMatch(id);
+        MatchSnapshot expectedSnapshot = newEmptySnapshot(firstName, secondName);
+        when(internalMapper.toMatchSnapshot(match)).thenReturn(expectedSnapshot);
 
-        assertThat(resultMatch).isNotNull();
-        assertThat(resultMatch).isEqualTo(match);
+        MatchSnapshot actualSnapshot = service.getMatchSnapshot(id);
+
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
     }
 
     @Test
     void getMatchFailsDueToNullId() {
-        assertThatThrownBy(() -> service.getMatch(null))
+        assertThatThrownBy(() -> service.getMatchSnapshot(null))
                 .hasMessage("ID cannot be null")
                 .isInstanceOf(MatchValidationException.class);
     }
 
     @Test
     void getMatchFailsDueToWrongId() {
-        assertThatThrownBy(() -> service.getMatch(UUID.fromString("91f1b06b-aa1a-482d-95f2-cf52c968f3f0")))
+        assertThatThrownBy(() -> service.getMatchSnapshot(UUID.fromString("91f1b06b-aa1a-482d-95f2-cf52c968f3f0")))
                 .isInstanceOf(MatchIsNotFoundException.class);
+    }
+
+    private MatchSnapshot newEmptySnapshot(String firstName, String secondName) {
+        return new MatchSnapshot(
+                firstName,
+                secondName,
+                "0",
+                "0",
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null
+        );
     }
 }

@@ -17,6 +17,8 @@ public class GlobalExceptionHandler {
     static {
         HTTP_STATUS_MAP.put(MatchValidationException.class, HttpStatus.BAD_REQUEST);
         HTTP_STATUS_MAP.put(MatchIsNotFoundException.class, HttpStatus.NOT_FOUND);
+        HTTP_STATUS_MAP.put(MatchAlreadyFinishedException.class, HttpStatus.NOT_FOUND);
+        HTTP_STATUS_MAP.put(SideIsNotFoundException.class, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BaseAppException.class)
