@@ -14,7 +14,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import tennisboard.request.CreateMatchRequest;
+import tennisboard.request.UpdateMatchRequest;
 import tennisboard.response.CreateMatchResponse;
+import tennisboard.service.logic.Match;
+import tennisboard.service.logic.MatchScore;
+import tennisboard.service.logic.Player;
+import tennisboard.service.logic.Side;
+import tennisboard.storage.OngoingMatchesStorage;
 
 import java.util.UUID;
 
@@ -32,6 +38,9 @@ public class MatchesIntegrationTest {
 
     @Autowired
     private WebApplicationContext applicationContext;
+
+    @Autowired
+    private OngoingMatchesStorage storage;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -121,4 +130,75 @@ public class MatchesIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").exists());
     }
+
+    @Test
+    public void addPointToSideAWorks() throws Exception {
+        CreateMatchRequest requestForCreate = new CreateMatchRequest("Agassi", "Federerr");
+
+        MvcResult result = mockMvc.perform(post("/matches")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestForCreate)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").isString())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        CreateMatchResponse response = objectMapper.readValue(content, CreateMatchResponse.class);
+        UUID id = response.id();
+
+        UpdateMatchRequest requestForUpdate = new UpdateMatchRequest("Agassi");
+
+        mockMvc.perform(post("/matches/{uuid}/point", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestForUpdate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstPlayerName").value("agassi"))
+                .andExpect(jsonPath("$.secondPlayerName").value("federerr"))
+                .andExpect(jsonPath("$.firstPlayerPoints").value("15"))
+                .andExpect(jsonPath("$.secondPlayerPoints").value("0"))
+                .andExpect(jsonPath("$.firstPlayerGames").value(0))
+                .andExpect(jsonPath("$.secondPlayerGames").value(0))
+                .andExpect(jsonPath("$.firstPlayerSets").value(0))
+                .andExpect(jsonPath("$.secondPlayerSets").value(0))
+                .andExpect(jsonPath("$.winnerName").value(nullValue()));
+    }
+
+    //будет работать нормально, когда будет БД. сейчаас - валится, т.к. он идет во времянку,
+    //а к этому времени уже матч оттуда удалили
+/*    @Test
+    public void getCreatedNewMatchBasic111() throws Exception {
+        String firstName = "Agassi";
+        String secondName = "Federer";
+
+        UUID id = UUID.randomUUID();
+        Match match = new Match(
+                id,
+                new Player(null, firstName.toLowerCase()),
+                new Player(null, secondName.toLowerCase()),
+                new MatchScore()
+        );
+        for (int i = 0; i < 47; i++) {
+            match.getMatchScore().increasePoint(Side.A);
+        }
+
+        storage.save(match);
+
+        UpdateMatchRequest requestForUpdate = new UpdateMatchRequest("Agassi");
+
+        mockMvc.perform(post("/matches/{uuid}/point", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestForUpdate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstPlayerName").value("agassi"))
+                .andExpect(jsonPath("$.secondPlayerName").value("federerr"))
+                .andExpect(jsonPath("$.firstPlayerPoints").value("0"))
+                .andExpect(jsonPath("$.secondPlayerPoints").value("0"))
+                .andExpect(jsonPath("$.firstPlayerGames").value(0))
+                .andExpect(jsonPath("$.secondPlayerGames").value(0))
+                .andExpect(jsonPath("$.firstPlayerSets").value(0))
+                .andExpect(jsonPath("$.secondPlayerSets").value(0))
+                .andExpect(jsonPath("$.winnerName").value("agassi"));
+    }*/
 }

@@ -3,9 +3,12 @@ package tennisboard.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import tennisboard.dto.MatchSnapshot;
+import tennisboard.dto.ShortMatchInfoDTO;
+import tennisboard.entity.MatchEntity;
 import tennisboard.mapper.calculator.MatchScoreFieldsCalculator;
-import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.logic.Match;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -25,4 +28,12 @@ public interface MatchInternalMapper {
     @Mapping(source = "matchScore.tieBreakPointB", target = "secondPlayerTieBreakPoints")
     @Mapping(target = "winnerName",  source = ".", qualifiedByName = "winnerName")
     MatchSnapshot toMatchSnapshot(Match match);
+
+    //с хибером дальше (ссылочки)
+    @Mapping(source = "player1", target = "firstPlayerName") //player1.name
+    @Mapping(source = "player2", target = "secondPlayerName")  //player2.name
+    @Mapping(source = "winner", target = "winnerName")  //winner.name
+    ShortMatchInfoDTO toShortMatchInfoDTO(MatchEntity matchEntity);
+
+    List<ShortMatchInfoDTO> toShortMatchInfoDTOList(List<MatchEntity> entities);
 }

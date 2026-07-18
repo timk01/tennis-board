@@ -9,7 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.exception.MatchIsNotFoundException;
 import tennisboard.exception.MatchValidationException;
+import tennisboard.exception.SideIsNotFoundException;
 import tennisboard.mapper.MatchInternalMapper;
+import tennisboard.repository.MatchRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
@@ -26,13 +28,17 @@ import static org.mockito.Mockito.when;
 class MatchServiceTest {
     @Mock
     private MatchInternalMapper internalMapper;
+
+    @Mock
+    private MatchRepository repository;
+
     private OngoingMatchesStorage storage;
     private MatchService service;
 
     @BeforeEach
     void init() {
         storage = new OngoingMatches();
-        service = new MatchService(internalMapper, storage);
+        service = new MatchService(internalMapper, storage, repository);
     }
 
     @Test
@@ -114,23 +120,12 @@ class MatchServiceTest {
      */
     @Test
     void getMatchSuccess() {
-        String firstName = "Federer";
-        String secondName = "Agassi";
+        SavedEmptyMatch result = getSavedEmptyMatch();
 
-        UUID id = UUID.randomUUID();
-        Match match = new Match(
-                id,
-                new Player(null, firstName.toLowerCase()),
-                new Player(null, secondName.toLowerCase()),
-                new MatchScore()
-        );
+        MatchSnapshot expectedSnapshot = newEmptySnapshot(result.firstName, result.secondName);
+        when(internalMapper.toMatchSnapshot(result.match)).thenReturn(expectedSnapshot);
 
-        storage.save(match);
-
-        MatchSnapshot expectedSnapshot = newEmptySnapshot(firstName, secondName);
-        when(internalMapper.toMatchSnapshot(match)).thenReturn(expectedSnapshot);
-
-        MatchSnapshot actualSnapshot = service.getMatchSnapshot(id);
+        MatchSnapshot actualSnapshot = service.getMatchSnapshot(result.id);
 
         assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
     }
@@ -148,6 +143,79 @@ class MatchServiceTest {
                 .isInstanceOf(MatchIsNotFoundException.class);
     }
 
+    @Test
+    void addPointSuccessForASide() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        MatchSnapshot expectedSnapshot = snapShotWithChangedPoints(
+                result.firstName(),
+                result.secondName(),
+                "15",
+                "0");
+        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+
+        MatchSnapshot actualSnapshot = service.addPoint("Federer", result.id());
+
+        assertThat(result.match().getMatchScore().getPointA()).isEqualTo(15);
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
+    }
+
+    @Test
+    void addPointSuccessForBSide() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        MatchSnapshot expectedSnapshot = snapShotWithChangedPoints(
+                result.firstName(),
+                result.secondName(),
+                "0",
+                "15");
+        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+
+        MatchSnapshot actualSnapshot = service.addPoint("Agassi", result.id());
+
+        assertThat(result.match().getMatchScore().getPointB()).isEqualTo(15);
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
+    }
+
+    @Test
+    void addMatchFailsDueToNullId() {
+        assertThatThrownBy(() -> service.addPoint("abc", null))
+                .hasMessage("ID cannot be null")
+                .isInstanceOf(MatchValidationException.class);
+    }
+
+    @Test
+    void addMatchFailsDueToWrongId() {
+        assertThatThrownBy(() -> service.addPoint(
+                        "abc",
+                        UUID.fromString("91f1b06b-aa1a-482d-95f2-cf52c968f3f0")
+                ))
+                .isInstanceOf(MatchIsNotFoundException.class);
+    }
+
+    @Test
+    void addMatchFailsDueToNullName() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        assertThatThrownBy(() -> service.addPoint(
+                null,
+                result.id
+        ))
+                .isInstanceOf(MatchValidationException.class);
+    }
+
+    @Test
+    void addMatchFailsDueToNotFoundName() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        assertThatThrownBy(() -> service.addPoint(
+                "abc",
+                result.id
+        ))
+                .isInstanceOf(SideIsNotFoundException.class);
+    }
+
+
     private MatchSnapshot newEmptySnapshot(String firstName, String secondName) {
         return new MatchSnapshot(
                 firstName,
@@ -162,5 +230,46 @@ class MatchServiceTest {
                 null,
                 null
         );
+    }
+
+    private MatchSnapshot snapShotWithChangedPoints(
+            String firstName,
+            String secondName,
+            String firstPlayerPoints,
+            String secondPlayerPoints) {
+        return new MatchSnapshot(
+                firstName,
+                secondName,
+                firstPlayerPoints,
+                secondPlayerPoints,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null
+        );
+    }
+
+    private SavedEmptyMatch getSavedEmptyMatch() {
+        String firstName = "Federer";
+        String secondName = "Agassi";
+
+        UUID id = UUID.randomUUID();
+        Match match = new Match(
+                id,
+                new Player(null, firstName.toLowerCase()),
+                new Player(null, secondName.toLowerCase()),
+                new MatchScore()
+        );
+
+        storage.save(match);
+        SavedEmptyMatch result = new SavedEmptyMatch(firstName, secondName, id, match);
+        return result;
+    }
+
+    private record SavedEmptyMatch(String firstName, String secondName, UUID id, Match match) {
+
     }
 }

@@ -3,15 +3,17 @@ package tennisboard.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.mapper.MatchResponseMapper;
 import tennisboard.request.CreateMatchRequest;
 import tennisboard.request.UpdateMatchRequest;
 import tennisboard.response.CreateMatchResponse;
+import tennisboard.response.FinishedMatchesEssentialInfoResponse;
 import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.MatchService;
-import tennisboard.service.logic.Match;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -60,8 +62,16 @@ public class MatchesController {
                 HttpStatus.OK);
     }
 
-/*    @GetMapping
-    public ResponseEntity<finishedMatchesList> getFinishedMatches() {
-        return new ResponseEntity<finishedMatchesList>();
-    }*/
+    @GetMapping
+    public ResponseEntity<FinishedMatchesEssentialInfoResponse> getFinishedMatches(
+            @RequestParam (defaultValue = "1") int page,
+            @RequestParam Optional<String> player_name
+            ) {
+        FinishedMatchesEssentialInfoDTO finishedMatches
+                = matchService.getFinishedMatches(page, player_name.orElse(null));
+
+        return new ResponseEntity<>(
+                mapper.toFinishedMatchesEssentialInfoResponse(finishedMatches),
+                HttpStatus.OK);
+    }
 }
