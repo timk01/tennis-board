@@ -41,3 +41,6 @@ build/
 /logs/
 /log/
 out/
+
+# Игнорируем личный файл с реальными данными от базы данных
+src/main/resources/database.properties

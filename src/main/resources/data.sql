@@ -1,0 +1,28 @@
+insert into authors(name)
+values ('Лев Толстой'),
+       ('Александр Пушкин');
+
+insert into books(title, author_id)
+values ('Война и мир', 1),
+       ('Война и мир 2 том', 1),
+       ('Капитанская дочка', 2);
+
+--------------------------------------------
+
+insert into players(name)
+values ('Agassi'),
+       ('Federer'),
+       ('Nadal'),
+       ('Djokovic'),
+       ('Sampras');
+
+insert into matches(player1, player2, winner)
+values (1, 2, 1),
+       (1, 2, 2),
+       (2, 1, 1),
+       (2, 3, 2),
+       (3, 2, 2),
+       (4, 3, 3),
+       (4, 5, 4),
+       (4, 3, 3),
+       (3, 2, 2);
