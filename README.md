@@ -157,6 +157,22 @@ src/main/resources/database.properties.origin
 
 Так в Git не попадут реальные логины, пароли и серверные настройки.
 
+## JPA / Hibernate study notes
+
+В репозитории есть отдельная учебная ветка `jpa-study-notes` с примером `AuthorEntity` / `BookEntity`.
+
+В ней разобраны базовые темы JPA/Hibernate: `EntityManager`, `persist`, `find`, JPQL, связь `BookEntity -> AuthorEntity`, `join`, `Optional` при поиске и проблема N+1.
+
+Основные заметки находятся в комментариях к `BookDao` и `BookService`.
+
+Переключиться на учебную ветку / вернуться в основную:
+
+    git checkout jpa-study-notes
+
+Вернуться к основной ветке:
+
+    git checkout main
+
 ## Контакты
 
 Автор: [@timk01](https://github.com/timk01)

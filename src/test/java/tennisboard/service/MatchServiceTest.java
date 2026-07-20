@@ -3,7 +3,6 @@ package tennisboard.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tennisboard.dto.MatchSnapshot;
@@ -12,13 +11,13 @@ import tennisboard.exception.MatchValidationException;
 import tennisboard.exception.SideIsNotFoundException;
 import tennisboard.mapper.MatchInternalMapper;
 import tennisboard.repository.MatchRepository;
+import tennisboard.repository.PlayerRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
 import tennisboard.storage.OngoingMatches;
 import tennisboard.storage.OngoingMatchesStorage;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
@@ -30,7 +29,11 @@ class MatchServiceTest {
     private MatchInternalMapper internalMapper;
 
     @Mock
-    private MatchRepository repository;
+    private PlayerRepository playerRepository;
+    @Mock
+    private MatchRepository matchRepository;
+    @Mock
+    private FinishedMatchService finishedMatchService;
 
     private OngoingMatchesStorage storage;
     private MatchService service;
@@ -38,7 +41,7 @@ class MatchServiceTest {
     @BeforeEach
     void init() {
         storage = new OngoingMatches();
-        service = new MatchService(internalMapper, storage, repository);
+        service = new MatchService(internalMapper, storage, playerRepository, matchRepository, finishedMatchService);
     }
 
     @Test

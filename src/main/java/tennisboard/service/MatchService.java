@@ -6,12 +6,14 @@ import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.dto.ShortMatchInfoDTO;
 import tennisboard.entity.MatchEntity;
+import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.MatchAlreadyFinishedException;
 import tennisboard.exception.MatchIsNotFoundException;
 import tennisboard.exception.MatchValidationException;
 import tennisboard.exception.SideIsNotFoundException;
 import tennisboard.mapper.MatchInternalMapper;
 import tennisboard.repository.MatchRepository;
+import tennisboard.repository.PlayerRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
@@ -21,7 +23,6 @@ import tennisboard.storage.OngoingMatchesStorage;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
@@ -30,16 +31,22 @@ public class MatchService {
 
     private final MatchInternalMapper internalMapper;
     private final OngoingMatchesStorage ongoingMatchesStorage;
-    private  final MatchRepository repository;
+    private final PlayerRepository playerRepository;
+    private final MatchRepository matchRepository;
+    private final FinishedMatchService finishedMatchService;
 
     public MatchService(
             MatchInternalMapper internalMapper,
             OngoingMatchesStorage ongoingMatchesStorage,
-            MatchRepository repository
-            ) {
+            PlayerRepository playerRepository,
+            MatchRepository matchRepository,
+            FinishedMatchService finishedMatchService
+    ) {
         this.internalMapper = internalMapper;
         this.ongoingMatchesStorage = ongoingMatchesStorage;
-        this.repository = repository;
+        this.playerRepository = playerRepository;
+        this.matchRepository = matchRepository;
+        this.finishedMatchService = finishedMatchService;
     }
 
     public UUID createNewMatch(String firstPlayerName, String secondPlayerName) {
@@ -74,9 +81,6 @@ public class MatchService {
         return internalMapper.toMatchSnapshot(getMatch(uuid));
     }
 
-
-    //todo ЗДЕСЬ ВАЖНО: вернуть не Матч, а Матчснапшот (ибо матч - мутейбл, сов семи вытекающими)
-
     /**
      * Найти match по uuid — нормально без synchronized(match)
      * Но. Остальное лочить необходимо, т.к. между моментом нахождения и изменения одним потоком,
@@ -99,7 +103,7 @@ public class MatchService {
                 }
 
                 name = name.trim().toLowerCase();
-                Side side = null;
+                Side side;
                 if (match.getPlayer1().getName().equals(name)) {
                     side = Side.A;
                 } else if (match.getPlayer2().getName().equals(name)) {
@@ -112,19 +116,18 @@ public class MatchService {
 
                 match.getMatchScore().increasePoint(side);
                 if (match.isFinished()) {
-                    //сохранили finished match в ПОСТОЯННЫЙ БД
-                    //удалили из ongoing storage (уже есть)
+                    MatchSnapshot snapshot = internalMapper.toMatchSnapshot(match);
+                    finishedMatchService.saveMatch(match, uuid);
                     ongoingMatchesStorage.remove(uuid, match);
-                    //вернули response/snapshot по уже имеющемуся объекту match
+                    return snapshot;
                 }
             } else {
                 throw new MatchAlreadyFinishedException(
                         "Match is found, yet is already finished!"
                 );
             }
+            return internalMapper.toMatchSnapshot(match);
         }
-
-        return internalMapper.toMatchSnapshot(getMatch(uuid));
     }
 
     private Match getMatch(UUID uuid) {
@@ -154,7 +157,7 @@ public class MatchService {
             playerName = playerName.toLowerCase().trim();
         }
 
-        List<MatchEntity> matchEntities = repository.findAll();
+        List<MatchEntity> matchEntities = matchRepository.findAll();
         //toDo фильтр должен быть на уровне БД, т.е. я в файндОлл передаю:
         //плеер, пейдж, сайз (который сейас 5)
         List<MatchEntity> filteredEntities = matchEntities.stream()
@@ -170,13 +173,3 @@ public class MatchService {
                 PAGE_SIZE);
     }
 }
-
-//сервис должен проверить (валидация) и селать логику по полям выше
-// с неймом - кк выше
-// с пейджем...
-// еесли пейджа нет - показать все страницы (берем 5 матчей на страницу, например)
-// если есть - показать конкретную страницу с матчами
-
-//сервис:
-//если playerName == null - вообще все завершенне матчи
-// если не нуль - завершенные - где есть иммя (А или Б)

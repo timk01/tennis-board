@@ -40,6 +40,8 @@ create table matches
     constraint winner_is_player1_or_player2 check (matches.winner = player1 or matches.winner = player2)
 );
 
+CREATE UNIQUE INDEX index_players_name ON players (name);
+
 ------------------------------------------------
 
 select a.id author, a.name author_name, b.id book, b.title book_name

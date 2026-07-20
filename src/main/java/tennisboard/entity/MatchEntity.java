@@ -1,47 +1,63 @@
 package tennisboard.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "matches")
 public class MatchEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-    private int player1;
-    private int player2;
-    private int winner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player1")
+    @Column(name = "player1")
+    private PlayerEntity firstPlayer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player2")
+    private PlayerEntity secondPlayer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "winner")
+    private PlayerEntity winner;
+
+    public MatchEntity() {
+    }
+
+    public MatchEntity(PlayerEntity firstPlayer, PlayerEntity secondPlayer, PlayerEntity winner) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
+        this.winner = winner;
+    }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public PlayerEntity getFirstPlayer() {
+        return firstPlayer;
     }
 
-    public int getPlayer1() {
-        return player1;
+    public void setFirstPlayer(PlayerEntity firstPlayer) {
+        this.firstPlayer = firstPlayer;
     }
 
-    public void setPlayer1(int player1) {
-        this.player1 = player1;
+    public PlayerEntity getSecondPlayer() {
+        return secondPlayer;
     }
 
-    public int getPlayer2() {
-        return player2;
+    public void setSecondPlayer(PlayerEntity secondPlayer) {
+        this.secondPlayer = secondPlayer;
     }
 
-    public void setPlayer2(int player2) {
-        this.player2 = player2;
-    }
-
-    public int getWinner() {
+    public PlayerEntity getWinner() {
         return winner;
     }
 
-    public void setWinner(int winner) {
+    public void setWinner(PlayerEntity winner) {
         this.winner = winner;
     }
 }
-
-/*
-ID	Int	Первичный ключ, автоинкремент
-Player1	Int	Айди первого игрока, внешний ключ на Players.ID
-Player2	Int	Айди второго игрока, внешний ключ на Players.ID
-Winner	Int	Айди победителя, внешний ключ на Players.ID
- */
