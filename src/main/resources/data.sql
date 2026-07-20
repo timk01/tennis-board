@@ -7,6 +7,17 @@ values ('Война и мир', 1),
        ('Война и мир 2 том', 1),
        ('Капитанская дочка', 2);
 
+select *
+from Books b
+where b.author_id = 1
+  and b.title = 'Война и мир';
+
+select *
+from Books b
+join authors a on b.author_id = a.id
+where b.title = 'Война и мир'
+and a.name = 'Лев Толстой';
+
 --------------------------------------------
 
 insert into players(name)

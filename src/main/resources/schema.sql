@@ -13,6 +13,9 @@ create table books
     constraint fk_books_authors foreign key (author_id) references authors (id)
 );
 
+ALTER TABLE authors
+    ADD CONSTRAINT uk_authors_name UNIQUE (name);
+
 ------------------------------------------------
 
 create table players
