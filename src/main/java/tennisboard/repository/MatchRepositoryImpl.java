@@ -4,8 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import tennisboard.entity.MatchEntity;
-import tennisboard.entity.PlayerEntity;
-import tennisboard.service.logic.Player;
 
 import java.util.List;
 
@@ -17,7 +15,17 @@ public class MatchRepositoryImpl implements MatchRepository {
 
     @Override
     public List<MatchEntity> findAll() {
-        return List.of();
+        String query2 = """
+                select m
+                from MatchEntity m
+                join fetch m.firstPlayer
+                join fetch m.secondPlayer
+                join fetch m.winner
+                order by m.id
+                """;
+
+        return em.createQuery(query2, MatchEntity.class)
+                .getResultList();
     }
 
     @Override

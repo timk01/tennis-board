@@ -6,7 +6,6 @@ import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.dto.ShortMatchInfoDTO;
 import tennisboard.entity.MatchEntity;
-import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.MatchAlreadyFinishedException;
 import tennisboard.exception.MatchIsNotFoundException;
 import tennisboard.exception.MatchValidationException;
@@ -27,7 +26,7 @@ import java.util.UUID;
 @Service
 public class MatchService {
     private final static int MIN_PAGE = 1;
-    private static final int PAGE_SIZE = 5;
+    private static final int PAGE_ELEMENTS_SIZE = 5;
 
     private final MatchInternalMapper internalMapper;
     private final OngoingMatchesStorage ongoingMatchesStorage;
@@ -147,6 +146,21 @@ public class MatchService {
     }
 
     public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
+        /*
+        если судья говорит "покажи 5 страницу"
+        допустим у нас размер страницы (количество показываемых элементов) = 5 (минпейдж выше)
+        limit = 5 (PAGE_ELEMENTS_SIZE)
+        1 страница: 1-2-3-4-5, вторая 6-7-8-9-10, третья 11-12-13-14-15
+        т.е. будет:
+        select *
+        from matches m
+        order by m.id
+        limit 5 offset 10;
+        пропусти первые 10 строк (оффсет, скип), ограничь показ первыми 5
+        offset = (page - 1) * limit;
+        ((если страницы page, он просто покажет первые 5 энтитей))
+         */
+
         if (page < MIN_PAGE) {
             throw new MatchValidationException(String.format(
                     "Page number %d should be more or equal to %d", page, MIN_PAGE
@@ -158,18 +172,23 @@ public class MatchService {
         }
 
         List<MatchEntity> matchEntities = matchRepository.findAll();
+
+        long offset = (long) (page - 1) * PAGE_ELEMENTS_SIZE;
         //toDo фильтр должен быть на уровне БД, т.е. я в файндОлл передаю:
         //плеер, пейдж, сайз (который сейас 5)
         List<MatchEntity> filteredEntities = matchEntities.stream()
-                .filter(matchEntity -> true /*matchEntity.getPlayer1().equals(playerName)*/)
+                .skip(offset)
+                .limit(PAGE_ELEMENTS_SIZE)
                 .toList();
 
         List<ShortMatchInfoDTO> shortMatchInfoDTOList
                 = internalMapper.toShortMatchInfoDTOList(filteredEntities);
 
+        int totalPages = matchEntities.size() / PAGE_ELEMENTS_SIZE;
+
         return new FinishedMatchesEssentialInfoDTO(
                 shortMatchInfoDTOList,
-                MIN_PAGE,
-                PAGE_SIZE);
+                page,
+                PAGE_ELEMENTS_SIZE);
     }
 }
