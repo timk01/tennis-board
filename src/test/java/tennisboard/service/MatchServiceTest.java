@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tennisboard.dto.MatchSnapshot;
+import tennisboard.entity.MatchEntity;
+import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.MatchIsNotFoundException;
 import tennisboard.exception.MatchValidationException;
 import tennisboard.exception.SideIsNotFoundException;
@@ -14,6 +16,7 @@ import tennisboard.repository.MatchRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
+import tennisboard.service.logic.Side;
 import tennisboard.storage.OngoingMatches;
 import tennisboard.storage.OngoingMatchesStorage;
 
@@ -21,7 +24,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MatchServiceTest {
@@ -216,6 +219,96 @@ class MatchServiceTest {
                 .isInstanceOf(SideIsNotFoundException.class);
     }
 
+    @Test
+    void addLastPointForASideShouldSaveAndRemoveMatchWhenPointFinishesMatch() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        MatchSnapshot expectedSnapshot = snapShotWithWinner(
+                result.firstName(),
+                result.secondName(),
+                "0",
+                "0",
+                "federer");
+        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+
+        MatchSnapshot actualSnapshot = null;
+        for (int i = 0; i < 48; i++) {
+            actualSnapshot = service.addPoint("Federer", result.id());
+        }
+
+        assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
+        assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.A);
+        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
+        assertThat(storage.findById(result.id()).isEmpty()).isTrue();
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
+    }
+
+    @Test
+    void addLastPointForBSideShouldSaveAndRemoveMatchWhenPointFinishesMatch() {
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        MatchSnapshot expectedSnapshot = snapShotWithWinner(
+                result.firstName(),
+                result.secondName(),
+                "0",
+                "0",
+                "agassi");
+        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+
+        MatchSnapshot actualSnapshot = null;
+        for (int i = 0; i < 48; i++) {
+            actualSnapshot = service.addPoint("Agassi", result.id());
+        }
+
+        assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
+        assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.B);
+        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
+        assertThat(storage.findById(result.id()).isEmpty()).isTrue();
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
+    }
+
+    //toDo ?
+/*    @Test
+    void addLastPointForBSideShouldSaveAndRemoveMatchWhenPointFinishesMatch1111() {
+        //УЖЕ в стораге есть матч, заврешенный и мы его оттуда достаем
+
+        SavedEmptyMatch result = getSavedEmptyMatch();
+
+        MatchEntity matchEntity = new MatchEntity(
+                new PlayerEntity("Federer"),
+                new PlayerEntity("Agassi"),
+                new PlayerEntity("agassi")
+                );
+        when(matchRepository.save(matchEntity)).thenReturn(new MatchEntity(
+                new PlayerEntity("Federer"),
+                new PlayerEntity("Agassi"),
+                new PlayerEntity("agassi")
+        ));
+
+        MatchSnapshot expectedSnapshot = snapShotWithWinner(
+                result.firstName(),
+                result.secondName(),
+                "0",
+                "0",
+                "agassi");
+        when(matchRepository.save(matchEntity)).thenReturn(matchEntity);
+        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+
+        MatchSnapshot actualSnapshot = null;
+        for (int i = 0; i < 48; i++) {
+            actualSnapshot = service.addPoint("Agassi", result.id());
+        }
+
+
+
+        assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
+        assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.B);
+        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
+        assertThat(storage.findById(result.id()).isEmpty()).isTrue();
+        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
+    }*/
+
+
 
     private MatchSnapshot newEmptySnapshot(String firstName, String secondName) {
         return new MatchSnapshot(
@@ -233,11 +326,34 @@ class MatchServiceTest {
         );
     }
 
+    private MatchSnapshot snapShotWithWinner(
+            String firstName,
+            String secondName,
+            String firstPlayerPoints,
+            String secondPlayerPoints,
+            String winnerName
+    ) {
+        return new MatchSnapshot(
+                firstName,
+                secondName,
+                firstPlayerPoints,
+                secondPlayerPoints,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                winnerName
+        );
+    }
+
     private MatchSnapshot snapShotWithChangedPoints(
             String firstName,
             String secondName,
             String firstPlayerPoints,
-            String secondPlayerPoints) {
+            String secondPlayerPoints
+    ) {
         return new MatchSnapshot(
                 firstName,
                 secondName,

@@ -40,7 +40,7 @@ public class FinishedMatchService {
         if (optionalPlayer2Entity.isPresent()) {
             player2 = optionalPlayer2Entity.get();
         } else {
-            player2 = playerRepository.save(new PlayerEntity(name1));
+            player2 = playerRepository.save(new PlayerEntity(name2));
         }
 
         PlayerEntity winner = match.getWinner().getName().equals(name1) ? player1 : player2;
