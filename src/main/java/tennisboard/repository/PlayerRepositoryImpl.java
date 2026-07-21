@@ -2,9 +2,11 @@ package tennisboard.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
-import tennisboard.entity.AuthorEntity;
 import tennisboard.entity.PlayerEntity;
+import tennisboard.exception.PlayerNameAlreadyExistsException;
 
 import java.util.Optional;
 
@@ -16,7 +18,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public PlayerEntity save(PlayerEntity player) {
-        em.persist(player);
+        try {
+            em.persist(player);
+            em.flush();
+        } catch (DataIntegrityViolationException exception) {
+            throw new PlayerNameAlreadyExistsException(String.format(
+                    "Cannot save player %s due to data integrity violation", player.getName()
+            ));
+        }
         return player;
     }
 

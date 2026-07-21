@@ -15,9 +15,7 @@ import java.util.UUID;
 public class FinishedMatchService {
 
     private final PlayerRepository playerRepository;
-
     private final MatchRepository matchRepository;
-
 
     public FinishedMatchService(PlayerRepository playerRepository,
                                 MatchRepository matchRepository) {
@@ -44,9 +42,6 @@ public class FinishedMatchService {
         } else {
             player2 = playerRepository.save(new PlayerEntity(name1));
         }
-        //toDo посмотреть:
-        //PlayerEntity player2 = playerRepository.findByName(name2)
-        //        .orElseGet(() -> playerRepository.save(new PlayerEntity(name2)));
 
         PlayerEntity winner = match.getWinner().getName().equals(name1) ? player1 : player2;
 

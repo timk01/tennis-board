@@ -16,10 +16,6 @@ import org.springframework.web.context.WebApplicationContext;
 import tennisboard.request.CreateMatchRequest;
 import tennisboard.request.UpdateMatchRequest;
 import tennisboard.response.CreateMatchResponse;
-import tennisboard.service.logic.Match;
-import tennisboard.service.logic.MatchScore;
-import tennisboard.service.logic.Player;
-import tennisboard.service.logic.Side;
 import tennisboard.storage.OngoingMatchesStorage;
 
 import java.util.UUID;
@@ -151,8 +147,8 @@ public class MatchesIntegrationTest {
         UpdateMatchRequest requestForUpdate = new UpdateMatchRequest("Agassi");
 
         mockMvc.perform(post("/matches/{uuid}/point", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestForUpdate)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestForUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstPlayerName").value("agassi"))
                 .andExpect(jsonPath("$.secondPlayerName").value("federerr"))

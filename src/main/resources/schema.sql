@@ -1,20 +1,3 @@
-create table authors
-(
-    id   bigserial primary key,
-    name varchar(255) not null
-);
-
-create table books
-(
-    id        bigserial primary key,
-    title     varchar(255) not null,
-    author_id bigint       not null,
-
-    constraint fk_books_authors foreign key (author_id) references authors (id)
-);
-
-------------------------------------------------
-
 create table players
 (
     id   serial primary key,
@@ -41,10 +24,4 @@ create table matches
 );
 
 CREATE UNIQUE INDEX index_players_name ON players (name);
-
-------------------------------------------------
-
-select a.id author, a.name author_name, b.id book, b.title book_name
-from authors a
-         join books b on a.id = b.author_id;
 

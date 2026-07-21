@@ -64,9 +64,9 @@ public class MatchesController {
 
     @GetMapping
     public ResponseEntity<FinishedMatchesEssentialInfoResponse> getFinishedMatches(
-            @RequestParam (defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam Optional<String> player_name
-            ) {
+    ) {
         FinishedMatchesEssentialInfoDTO finishedMatches
                 = matchService.getFinishedMatches(page, player_name.orElse(null));
 

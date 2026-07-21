@@ -12,7 +12,6 @@ import tennisboard.exception.MatchValidationException;
 import tennisboard.exception.SideIsNotFoundException;
 import tennisboard.mapper.MatchInternalMapper;
 import tennisboard.repository.MatchRepository;
-import tennisboard.repository.PlayerRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
@@ -30,38 +29,28 @@ public class MatchService {
 
     private final MatchInternalMapper internalMapper;
     private final OngoingMatchesStorage ongoingMatchesStorage;
-    private final PlayerRepository playerRepository;
     private final MatchRepository matchRepository;
     private final FinishedMatchService finishedMatchService;
 
     public MatchService(
             MatchInternalMapper internalMapper,
             OngoingMatchesStorage ongoingMatchesStorage,
-            PlayerRepository playerRepository,
             MatchRepository matchRepository,
             FinishedMatchService finishedMatchService
     ) {
         this.internalMapper = internalMapper;
         this.ongoingMatchesStorage = ongoingMatchesStorage;
-        this.playerRepository = playerRepository;
         this.matchRepository = matchRepository;
         this.finishedMatchService = finishedMatchService;
     }
 
     public UUID createNewMatch(String firstPlayerName, String secondPlayerName) {
-        if (firstPlayerName == null || secondPlayerName == null || firstPlayerName.isBlank() || secondPlayerName.isBlank()) {
-            throw new MatchValidationException(String.format(
-                    "FirstName %s or/and SecondName %s cannot be null or empty", firstPlayerName, secondPlayerName
-            ));
-        }
+        validatePlayerName(firstPlayerName);
+        validatePlayerName(secondPlayerName);
 
         String normalizedFirstPlayerName = firstPlayerName.trim().toLowerCase();
         String normalizedSecondPlayerName = secondPlayerName.trim().toLowerCase();
-        if (normalizedFirstPlayerName.equals(normalizedSecondPlayerName)) {
-            throw new MatchValidationException(
-                    "Names are the same!"
-            );
-        }
+        validatePlayersNames(normalizedFirstPlayerName, normalizedSecondPlayerName);
 
         UUID id = UUID.randomUUID();
         Match match = new Match(
@@ -76,6 +65,14 @@ public class MatchService {
         return id;
     }
 
+    private void validatePlayersNames(String normalizedFirstPlayerName, String normalizedSecondPlayerName) {
+        if (normalizedFirstPlayerName.equals(normalizedSecondPlayerName)) {
+            throw new MatchValidationException(
+                    "Names are the same!"
+            );
+        }
+    }
+
     public MatchSnapshot getMatchSnapshot(UUID uuid) {
         return internalMapper.toMatchSnapshot(getMatch(uuid));
     }
@@ -87,7 +84,7 @@ public class MatchService {
      *
      * @param name - имя игрока
      * @param uuid - айди матча
-     * @return
+     * @return снапшот матча
      */
 
     public MatchSnapshot addPoint(String name, UUID uuid) {
@@ -95,23 +92,10 @@ public class MatchService {
 
         synchronized (match) {
             if (!match.isFinished()) {
-                if (name == null || name.isBlank()) {
-                    throw new MatchValidationException(String.format(
-                            "Name %s cannot be null or empty", name
-                    ));
-                }
+                validatePlayerName(name);
 
                 name = name.trim().toLowerCase();
-                Side side;
-                if (match.getPlayer1().getName().equals(name)) {
-                    side = Side.A;
-                } else if (match.getPlayer2().getName().equals(name)) {
-                    side = Side.B;
-                } else {
-                    throw new SideIsNotFoundException(
-                            "Match is found, but cannot find the passed player side in it"
-                    );
-                }
+                Side side = getSide(name, match);
 
                 match.getMatchScore().increasePoint(side);
                 if (match.isFinished()) {
@@ -127,6 +111,20 @@ public class MatchService {
             }
             return internalMapper.toMatchSnapshot(match);
         }
+    }
+
+    private Side getSide(String name, Match match) {
+        Side side;
+        if (match.getPlayer1().getName().equals(name)) {
+            side = Side.A;
+        } else if (match.getPlayer2().getName().equals(name)) {
+            side = Side.B;
+        } else {
+            throw new SideIsNotFoundException(
+                    "Match is found, but cannot find the passed player side in it"
+            );
+        }
+        return side;
     }
 
     private Match getMatch(UUID uuid) {
@@ -145,50 +143,55 @@ public class MatchService {
         return optionalMatch.get();
     }
 
-    public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
-        /*
-        если судья говорит "покажи 5 страницу"
-        допустим у нас размер страницы (количество показываемых элементов) = 5 (минпейдж выше)
-        limit = 5 (PAGE_ELEMENTS_SIZE)
-        1 страница: 1-2-3-4-5, вторая 6-7-8-9-10, третья 11-12-13-14-15
-        т.е. будет:
-        select *
-        from matches m
-        order by m.id
-        limit 5 offset 10;
-        пропусти первые 10 строк (оффсет, скип), ограничь показ первыми 5
-        offset = (page - 1) * limit;
-        ((если страницы page, он просто покажет первые 5 энтитей))
-         */
+    /**
+     * Получает страницу завершённых матчей с участием указанного игрока
+     *
+     * @param page       (должен быть более или равным 1)
+     * @param playerName (не должен быть null или пустым)
+     * @return FinishedMatchesEssentialInfoDTO - состоит из замаппанного shortMatchInfoDTOList
+     * с именами игроков и победителем, page для показа конкретной страницы и totalPagesForPlayer
+     * - сколько всего страниц есть у данного игрока в БД
+     */
 
+    public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
+        validatePageNumber(page);
+
+        validatePlayerName(playerName);
+
+        playerName = playerName.toLowerCase().trim();
+
+        int offset = (page - 1) * PAGE_ELEMENTS_SIZE;
+
+        List<MatchEntity> filteredEntities =
+                matchRepository.findAllMatchesByPlayerNameFiltered(offset, PAGE_ELEMENTS_SIZE, playerName);
+
+        List<ShortMatchInfoDTO> shortMatchInfoDTOList
+                = internalMapper.toShortMatchInfoDTOList(filteredEntities);
+
+        return new FinishedMatchesEssentialInfoDTO(
+                shortMatchInfoDTOList,
+                page,
+                countTotalPagesForPlayer(playerName));
+    }
+
+    private int countTotalPagesForPlayer(String playerName) {
+        return (int) Math.ceil((double) matchRepository.countMatchesPlayedByPlayer(playerName)
+                / PAGE_ELEMENTS_SIZE);
+    }
+
+    private void validatePageNumber(int page) {
         if (page < MIN_PAGE) {
             throw new MatchValidationException(String.format(
                     "Page number %d should be more or equal to %d", page, MIN_PAGE
             ));
         }
+    }
 
-        if (StringUtils.hasText(playerName)) {
-            playerName = playerName.toLowerCase().trim();
+    private void validatePlayerName(String playerName) {
+        if (!StringUtils.hasText(playerName)) {
+            throw new MatchValidationException(String.format(
+                    "Name %s cannot be null or empty", playerName
+            ));
         }
-
-        List<MatchEntity> matchEntities = matchRepository.findAll();
-
-        long offset = (long) (page - 1) * PAGE_ELEMENTS_SIZE;
-        //toDo фильтр должен быть на уровне БД, т.е. я в файндОлл передаю:
-        //плеер, пейдж, сайз (который сейас 5)
-        List<MatchEntity> filteredEntities = matchEntities.stream()
-                .skip(offset)
-                .limit(PAGE_ELEMENTS_SIZE)
-                .toList();
-
-        List<ShortMatchInfoDTO> shortMatchInfoDTOList
-                = internalMapper.toShortMatchInfoDTOList(filteredEntities);
-
-        int totalPages = matchEntities.size() / PAGE_ELEMENTS_SIZE;
-
-        return new FinishedMatchesEssentialInfoDTO(
-                shortMatchInfoDTOList,
-                page,
-                PAGE_ELEMENTS_SIZE);
     }
 }

@@ -11,7 +11,6 @@ import tennisboard.exception.MatchValidationException;
 import tennisboard.exception.SideIsNotFoundException;
 import tennisboard.mapper.MatchInternalMapper;
 import tennisboard.repository.MatchRepository;
-import tennisboard.repository.PlayerRepository;
 import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
@@ -20,7 +19,8 @@ import tennisboard.storage.OngoingMatchesStorage;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,8 +28,6 @@ class MatchServiceTest {
     @Mock
     private MatchInternalMapper internalMapper;
 
-    @Mock
-    private PlayerRepository playerRepository;
     @Mock
     private MatchRepository matchRepository;
     @Mock
@@ -41,7 +39,7 @@ class MatchServiceTest {
     @BeforeEach
     void init() {
         storage = new OngoingMatches();
-        service = new MatchService(internalMapper, storage, playerRepository, matchRepository, finishedMatchService);
+        service = new MatchService(internalMapper, storage, matchRepository, finishedMatchService);
     }
 
     @Test
@@ -190,9 +188,9 @@ class MatchServiceTest {
     @Test
     void addMatchFailsDueToWrongId() {
         assertThatThrownBy(() -> service.addPoint(
-                        "abc",
-                        UUID.fromString("91f1b06b-aa1a-482d-95f2-cf52c968f3f0")
-                ))
+                "abc",
+                UUID.fromString("91f1b06b-aa1a-482d-95f2-cf52c968f3f0")
+        ))
                 .isInstanceOf(MatchIsNotFoundException.class);
     }
 

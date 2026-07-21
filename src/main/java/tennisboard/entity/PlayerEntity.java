@@ -3,7 +3,11 @@ package tennisboard.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "players")
+@Table(
+        name = "players",
+        indexes = {@Index(name = "index_players_name", columnList = "name", unique = true)}
+)
+
 public class PlayerEntity {
 
     @Id

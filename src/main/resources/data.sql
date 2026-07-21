@@ -1,14 +1,3 @@
-insert into authors(name)
-values ('Лев Толстой'),
-       ('Александр Пушкин');
-
-insert into books(title, author_id)
-values ('Война и мир', 1),
-       ('Война и мир 2 том', 1),
-       ('Капитанская дочка', 2);
-
---------------------------------------------
-
 insert into players(name)
 values ('Agassi'),
        ('Federer'),

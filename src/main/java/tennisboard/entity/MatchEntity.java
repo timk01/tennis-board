@@ -13,7 +13,6 @@ public class MatchEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player1")
-    @Column(name = "player1")
     private PlayerEntity firstPlayer;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -9,7 +9,8 @@ import tennisboard.service.logic.Side;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MatchTest {
     private static final int MINIMUM_GAMES_FOR_WIN_SET = 6;

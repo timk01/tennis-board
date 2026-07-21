@@ -9,7 +9,7 @@ import tennisboard.service.logic.Side;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MatchScoreFieldsCalculatorTest {
     private MatchScoreFieldsCalculator calculator;

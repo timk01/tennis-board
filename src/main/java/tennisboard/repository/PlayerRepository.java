@@ -1,7 +1,6 @@
 package tennisboard.repository;
 
 import tennisboard.entity.PlayerEntity;
-import tennisboard.service.logic.Player;
 
 import java.util.Optional;
 
