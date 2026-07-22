@@ -3,6 +3,7 @@ package tennisboard.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import tennisboard.entity.MatchEntity;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     @PersistenceContext
     EntityManager em;
 
+    @Transactional
     @Override
     public MatchEntity save(MatchEntity match) {
         em.persist(match);
@@ -67,6 +69,38 @@ public class MatchRepositoryImpl implements MatchRepository {
                 .getResultList();
     }
 
+    @Override
+    public List<MatchEntity> findAllMatchesFiltered(int offset, int limit) {
+        String selectMatchesIdQuery = """
+                select m.id
+                from MatchEntity m
+                order by m.id
+                """;
+
+        List<Long> matchesId = em.createQuery(selectMatchesIdQuery, Long.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+
+        if (matchesId.isEmpty()) {
+            return List.of();
+        }
+
+        String matchesInfoQuery = """
+                select m
+                from MatchEntity m
+                join fetch m.firstPlayer
+                join fetch m.secondPlayer
+                join fetch m.winner
+                where m.id in :matchesId
+                order by m.id
+                """;
+
+        return em.createQuery(matchesInfoQuery, MatchEntity.class)
+                .setParameter("matchesId", matchesId)
+                .getResultList();
+    }
+
     /**
      * считает количество матчей (count(m)), сыгранных игроком с фильтром по имени
      * (если он играл в матче, он либо равен первому, либо второму игроку)
@@ -84,6 +118,17 @@ public class MatchRepositoryImpl implements MatchRepository {
 
         return em.createQuery(countMatchesIdQuery, Long.class)
                 .setParameter("playerName", playerName)
+                .getSingleResult();
+    }
+
+    @Override
+    public Long countAllMatches() {
+        String countMatchesIdQuery = """
+                select count(m)
+                from MatchEntity m
+                """;
+
+        return em.createQuery(countMatchesIdQuery, Long.class)
                 .getSingleResult();
     }
 }

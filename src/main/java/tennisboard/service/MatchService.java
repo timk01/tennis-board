@@ -156,26 +156,34 @@ public class MatchService {
     public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
         validatePageNumber(page);
 
-        validatePlayerName(playerName);
-
-        playerName = playerName.toLowerCase().trim();
-
         int offset = (page - 1) * PAGE_ELEMENTS_SIZE;
 
-        List<MatchEntity> filteredEntities =
-                matchRepository.findAllMatchesByPlayerNameFiltered(offset, PAGE_ELEMENTS_SIZE, playerName);
+        List<MatchEntity> filteredMatches;
+        long totalMatches;
+
+        if (StringUtils.hasText(playerName)) {
+            playerName = playerName.toLowerCase().trim();
+            filteredMatches =
+                    matchRepository.findAllMatchesByPlayerNameFiltered(offset, PAGE_ELEMENTS_SIZE, playerName);
+            totalMatches = matchRepository.countMatchesPlayedByPlayer(playerName);
+        } else {
+            filteredMatches =
+                    matchRepository.findAllMatchesFiltered(offset, PAGE_ELEMENTS_SIZE);
+            totalMatches = matchRepository.countAllMatches();
+        }
 
         List<ShortMatchInfoDTO> shortMatchInfoDTOList
-                = internalMapper.toShortMatchInfoDTOList(filteredEntities);
+                = internalMapper.toShortMatchInfoDTOList(filteredMatches);
 
         return new FinishedMatchesEssentialInfoDTO(
                 shortMatchInfoDTOList,
                 page,
-                countTotalPagesForPlayer(playerName));
+                countTotalPages(totalMatches));
     }
 
-    private int countTotalPagesForPlayer(String playerName) {
-        return (int) Math.ceil((double) matchRepository.countMatchesPlayedByPlayer(playerName)
+
+    private int countTotalPages(long totalMatches) {
+        return (int) Math.ceil((double) totalMatches
                 / PAGE_ELEMENTS_SIZE);
     }
 

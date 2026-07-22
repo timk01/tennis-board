@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.PlayerNameAlreadyExistsException;
 
@@ -16,6 +17,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @PersistenceContext
     EntityManager em;
 
+    @Transactional
     @Override
     public PlayerEntity save(PlayerEntity player) {
         try {

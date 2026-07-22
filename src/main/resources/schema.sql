@@ -24,4 +24,3 @@ create table matches
 );
 
 CREATE UNIQUE INDEX index_players_name ON players (name);
-

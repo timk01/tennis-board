@@ -64,11 +64,11 @@ public class MatchesController {
 
     @GetMapping
     public ResponseEntity<FinishedMatchesEssentialInfoResponse> getFinishedMatches(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam Optional<String> player_name
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "player_name", required = false) String playerName
     ) {
         FinishedMatchesEssentialInfoDTO finishedMatches
-                = matchService.getFinishedMatches(page, player_name.orElse(null));
+                = matchService.getFinishedMatches(page, playerName);
 
         return new ResponseEntity<>(
                 mapper.toFinishedMatchesEssentialInfoResponse(finishedMatches),

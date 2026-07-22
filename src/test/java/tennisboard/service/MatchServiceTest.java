@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
 import tennisboard.dto.MatchSnapshot;
+import tennisboard.dto.ShortMatchInfoDTO;
 import tennisboard.entity.MatchEntity;
 import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.MatchIsNotFoundException;
@@ -20,6 +22,8 @@ import tennisboard.service.logic.Side;
 import tennisboard.storage.OngoingMatches;
 import tennisboard.storage.OngoingMatchesStorage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +34,6 @@ import static org.mockito.Mockito.*;
 class MatchServiceTest {
     @Mock
     private MatchInternalMapper internalMapper;
-
     @Mock
     private MatchRepository matchRepository;
     @Mock
@@ -267,48 +270,157 @@ class MatchServiceTest {
         assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
     }
 
-    //toDo ?
-/*    @Test
-    void addLastPointForBSideShouldSaveAndRemoveMatchWhenPointFinishesMatch1111() {
-        //УЖЕ в стораге есть матч, заврешенный и мы его оттуда достаем
+    @Test
+    void getFinishedMatchesFromTwoMatchesWithDifferentWinnersAndZeroOffsetReturnsProperResult() {
+        String playerName = "federer";
+        String opponentName = "agassi";
 
-        SavedEmptyMatch result = getSavedEmptyMatch();
+        List<MatchEntity> matches = new ArrayList<>(List.of(
+                new MatchEntity(
+                        new PlayerEntity(playerName),
+                        new PlayerEntity(opponentName),
+                        new PlayerEntity(playerName)
+                ),
+                new MatchEntity(
+                        new PlayerEntity(playerName),
+                        new PlayerEntity(opponentName),
+                        new PlayerEntity(opponentName)
+                )
+        ));
+        when(matchRepository.findAllMatchesByPlayerNameFiltered(0, 5, playerName))
+                .thenReturn(matches);
 
-        MatchEntity matchEntity = new MatchEntity(
-                new PlayerEntity("Federer"),
-                new PlayerEntity("Agassi"),
-                new PlayerEntity("agassi")
-                );
-        when(matchRepository.save(matchEntity)).thenReturn(new MatchEntity(
-                new PlayerEntity("Federer"),
-                new PlayerEntity("Agassi"),
-                new PlayerEntity("agassi")
+        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
+                new ShortMatchInfoDTO(
+                        playerName,
+                        opponentName,
+                        playerName
+                ),
+                new ShortMatchInfoDTO(
+                        playerName,
+                        opponentName,
+                        opponentName
+                )
+        ));
+        when(internalMapper.toShortMatchInfoDTOList(matches)).thenReturn(convertedShortMatchesDto);
+
+        int playerMatches = 2;
+        when(matchRepository.countMatchesPlayedByPlayer(playerName))
+                .thenReturn((long) playerMatches);
+
+        int page = 1;
+        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+                convertedShortMatchesDto,
+                page,
+                1);
+
+        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, playerName);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(matchRepository, times(1))
+                .findAllMatchesByPlayerNameFiltered(0, 5, playerName);
+        verify(internalMapper, times(1)).toShortMatchInfoDTOList(matches);
+        verify(matchRepository, times(1))
+                .countMatchesPlayedByPlayer(playerName);
+    }
+
+    @Test
+    void getFinishedMatchesFromZeroMatchesReturnsEmptyRecord() {
+        String playerName = "federer";
+
+        List<MatchEntity> emptyMatches = new ArrayList<>(List.of(
         ));
 
-        MatchSnapshot expectedSnapshot = snapShotWithWinner(
-                result.firstName(),
-                result.secondName(),
-                "0",
-                "0",
-                "agassi");
-        when(matchRepository.save(matchEntity)).thenReturn(matchEntity);
-        when(internalMapper.toMatchSnapshot(result.match())).thenReturn(expectedSnapshot);
+        when(matchRepository.findAllMatchesByPlayerNameFiltered(0, 5, playerName))
+                .thenReturn(emptyMatches);
 
-        MatchSnapshot actualSnapshot = null;
-        for (int i = 0; i < 48; i++) {
-            actualSnapshot = service.addPoint("Agassi", result.id());
-        }
+        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
+        ));
+        when(internalMapper.toShortMatchInfoDTOList(emptyMatches)).thenReturn(convertedShortMatchesDto);
+
+        int playerMatches = 0;
+        when(matchRepository.countMatchesPlayedByPlayer(playerName))
+                .thenReturn((long) playerMatches);
+
+        int page = 1;
+        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+                convertedShortMatchesDto,
+                page,
+                0);
+
+        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, playerName);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(matchRepository, times(1))
+                .findAllMatchesByPlayerNameFiltered(0, 5, playerName);
+        verify(internalMapper, times(1)).toShortMatchInfoDTOList(emptyMatches);
+        verify(matchRepository, times(1))
+                .countMatchesPlayedByPlayer(playerName);
+    }
 
 
+    @Test
+    void getFinishedMatchesFromTwoMatchesWithoutNamesAndWithZeroOffsetReturnsProperResult() {
+        String playerName = "federer";
+        String opponentName = "agassi";
 
-        assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
-        assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.B);
-        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
-        assertThat(storage.findById(result.id()).isEmpty()).isTrue();
-        assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
-    }*/
+        List<MatchEntity> matches = new ArrayList<>(List.of(
+                new MatchEntity(
+                        new PlayerEntity(playerName),
+                        new PlayerEntity(opponentName),
+                        new PlayerEntity(playerName)
+                ),
+                new MatchEntity(
+                        new PlayerEntity(playerName),
+                        new PlayerEntity(opponentName),
+                        new PlayerEntity(opponentName)
+                )
+        ));
+        when(matchRepository.findAllMatchesFiltered(0, 5))
+                .thenReturn(matches);
 
+        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
+                new ShortMatchInfoDTO(
+                        playerName,
+                        opponentName,
+                        playerName
+                ),
+                new ShortMatchInfoDTO(
+                        playerName,
+                        opponentName,
+                        opponentName
+                )
+        ));
+        when(internalMapper.toShortMatchInfoDTOList(matches)).thenReturn(convertedShortMatchesDto);
 
+        int playerMatches = 2;
+        when(matchRepository.countAllMatches())
+                .thenReturn((long) playerMatches);
+
+        int page = 1;
+        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+                convertedShortMatchesDto,
+                page,
+                1);
+
+        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, null);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(matchRepository, times(1))
+                .findAllMatchesFiltered(0, 5);
+        verify(internalMapper, times(1)).toShortMatchInfoDTOList(matches);
+        verify(matchRepository, times(1))
+                .countAllMatches();
+    }
+
+    @Test
+    void getFinishedMatchesFailsDueToZeroReceivedPages() {
+        assertThatThrownBy(() -> service.getFinishedMatches(0, "federer"))
+                .isInstanceOf(MatchValidationException.class);
+    }
 
     private MatchSnapshot newEmptySnapshot(String firstName, String secondName) {
         return new MatchSnapshot(
