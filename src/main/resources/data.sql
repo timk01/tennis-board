@@ -1,9 +1,9 @@
 insert into players(name)
-values ('Agassi'),
-       ('Federer'),
-       ('Nadal'),
-       ('Djokovic'),
-       ('Sampras');
+values ('agassi'),
+       ('federer'),
+       ('nadal'),
+       ('djokovic'),
+       ('sampras');
 
 insert into matches(player1, player2, winner)
 values (1, 2, 1),
