@@ -1,5 +1,6 @@
 package tennisboard.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tennisboard.entity.MatchEntity;
@@ -11,17 +12,12 @@ import tennisboard.service.logic.Match;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class FinishedMatchService {
 
     private final PlayerRepository playerRepository;
     private final MatchRepository matchRepository;
-
-    public FinishedMatchService(PlayerRepository playerRepository,
-                                MatchRepository matchRepository) {
-        this.playerRepository = playerRepository;
-        this.matchRepository = matchRepository;
-    }
 
     @Transactional
     public void saveMatch(Match match, UUID uuid) {

@@ -1,5 +1,7 @@
 package tennisboard.service.logic;
 
+import lombok.Getter;
+
 import java.util.List;
 
 public class MatchScore {
@@ -13,23 +15,37 @@ public class MatchScore {
     private static final int MINIMUM_SETS_TO_WIN = 2;
     private static final List<Integer> BASIC_GAME_POINTS = List.of(0, 15, 30, 40);
 
+    @Getter
     private int pointA;
+
+    @Getter
     private int pointB;
+
     private int roundA;
+
     private int roundB;
 
+    @Getter
     private int gameA;
+
+    @Getter
     private int gameB;
+
+    @Getter
     private StatusOfGame statusOfGame = StatusOfGame.REGULAR_GAME;
 
+    @Getter
     private int setA;
+
+    @Getter
     private int setB;
+
+    @Getter
     private StatusOfSet statusOfSet = StatusOfSet.REGULAR_SET;
 
     private boolean isMatchFinished;
     private Side winner;
     private Side loser;
-
 
     public void increasePoint(Side side) {
         if (side == null) {
@@ -189,38 +205,6 @@ public class MatchScore {
         } else if (roundB - roundA == MINIMUM_ROUNDS_FOR_GETTING_GAME_ADVANTAGE) {
             statusOfGame = StatusOfGame.ADVANTAGE_B;
         }
-    }
-
-    public int getPointA() {
-        return pointA;
-    }
-
-    public int getPointB() {
-        return pointB;
-    }
-
-    public int getGameA() {
-        return gameA;
-    }
-
-    public int getGameB() {
-        return gameB;
-    }
-
-    public StatusOfGame getStatusOfGame() {
-        return statusOfGame;
-    }
-
-    public int getSetA() {
-        return setA;
-    }
-
-    public int getSetB() {
-        return setB;
-    }
-
-    public StatusOfSet getStatusOfSet() {
-        return statusOfSet;
     }
 
     public Side getWinner() {

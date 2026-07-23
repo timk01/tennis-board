@@ -1,5 +1,6 @@
 package tennisboard.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class MatchService {
     private final static int MIN_PAGE = 1;
@@ -31,18 +33,6 @@ public class MatchService {
     private final OngoingMatchesStorage ongoingMatchesStorage;
     private final MatchRepository matchRepository;
     private final FinishedMatchService finishedMatchService;
-
-    public MatchService(
-            MatchInternalMapper internalMapper,
-            OngoingMatchesStorage ongoingMatchesStorage,
-            MatchRepository matchRepository,
-            FinishedMatchService finishedMatchService
-    ) {
-        this.internalMapper = internalMapper;
-        this.ongoingMatchesStorage = ongoingMatchesStorage;
-        this.matchRepository = matchRepository;
-        this.finishedMatchService = finishedMatchService;
-    }
 
     public UUID createNewMatch(String firstPlayerName, String secondPlayerName) {
         validatePlayerName(firstPlayerName);
@@ -74,7 +64,11 @@ public class MatchService {
     }
 
     public MatchSnapshot getMatchSnapshot(UUID uuid) {
-        return internalMapper.toMatchSnapshot(getMatch(uuid));
+        Match match = getMatch(uuid);
+
+        synchronized (match) {
+            return internalMapper.toMatchSnapshot(match);
+        }
     }
 
     /**

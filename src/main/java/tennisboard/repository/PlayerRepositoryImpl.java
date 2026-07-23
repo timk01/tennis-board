@@ -15,7 +15,7 @@ import java.util.Optional;
 public class PlayerRepositoryImpl implements PlayerRepository {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
     @Transactional
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 public class MatchRepositoryImpl implements MatchRepository {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
     @Transactional
     @Override

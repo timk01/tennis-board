@@ -1,7 +1,12 @@
 package tennisboard.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(
         name = "players",
@@ -15,25 +20,11 @@ public class PlayerEntity {
     @Column(name = "id")
     private int id;
 
+    @Setter
     @Column(name = "name")
     private String name;
 
-    public PlayerEntity() {
-    }
-
     public PlayerEntity(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

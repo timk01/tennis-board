@@ -1,5 +1,6 @@
 package tennisboard.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +17,13 @@ import tennisboard.service.MatchService;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/matches")
 public class MatchesController {
     private final MatchService matchService;
 
     private final MatchResponseMapper mapper;
-
-    public MatchesController(MatchService matchService, MatchResponseMapper mapper) {
-        this.matchService = matchService;
-        this.mapper = mapper;
-    }
 
     @PostMapping
     public ResponseEntity<CreateMatchResponse> createNewMatch(@RequestBody CreateMatchRequest request) {
