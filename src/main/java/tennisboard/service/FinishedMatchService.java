@@ -1,6 +1,7 @@
 package tennisboard.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tennisboard.entity.MatchEntity;
@@ -12,6 +13,7 @@ import tennisboard.service.logic.Match;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class FinishedMatchService {
@@ -23,6 +25,7 @@ public class FinishedMatchService {
     public void saveMatch(Match match, UUID uuid) {
         String name1 = match.getPlayer1().getName();
         Optional<PlayerEntity> optionalPlayer1Entity = playerRepository.findByName(name1);
+
         PlayerEntity player1;
         if (optionalPlayer1Entity.isPresent()) {
             player1 = optionalPlayer1Entity.get();
@@ -32,6 +35,7 @@ public class FinishedMatchService {
 
         String name2 = match.getPlayer2().getName();
         Optional<PlayerEntity> optionalPlayer2Entity = playerRepository.findByName(name2);
+
         PlayerEntity player2;
         if (optionalPlayer2Entity.isPresent()) {
             player2 = optionalPlayer2Entity.get();
@@ -43,5 +47,10 @@ public class FinishedMatchService {
 
         MatchEntity match1 = new MatchEntity(player1, player2, winner);
         matchRepository.save(match1);
+        log.info("Finished match is saved into matchRepository: UUID={}, player1={}, player2={}, winner={}",
+                uuid,
+                player1,
+                player2,
+                winner);
     }
 }

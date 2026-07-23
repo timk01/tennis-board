@@ -1,6 +1,7 @@
 package tennisboard.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MatchService {
@@ -51,6 +53,10 @@ public class MatchService {
         );
 
         ongoingMatchesStorage.save(match);
+        log.info("Match is created and  saved into memory: UUID={}, player1Name={}, player2Name={}",
+                id,
+                normalizedFirstPlayerName,
+                normalizedSecondPlayerName);
 
         return id;
     }
@@ -96,6 +102,12 @@ public class MatchService {
                     MatchSnapshot snapshot = internalMapper.toMatchSnapshot(match);
                     finishedMatchService.saveMatch(match, uuid);
                     ongoingMatchesStorage.remove(uuid, match);
+                    log.debug("Match is finished and removed, has id: UUID={}, player1Name={}, player2Name={}, winner={}",
+                            match.getMatchId(),
+                            match.getPlayer1().getName(),
+                            match.getPlayer2().getName(),
+                            match.getWinner().getName()
+                    );
                     return snapshot;
                 }
             } else {
@@ -103,6 +115,12 @@ public class MatchService {
                         "Match is found, yet is already finished!"
                 );
             }
+
+            log.debug("Ongoing match has id: UUID={}, player1Name={}, player2Name={}",
+                    match.getMatchId(),
+                    match.getPlayer1().getName(),
+                    match.getPlayer2().getName()
+            );
             return internalMapper.toMatchSnapshot(match);
         }
     }
@@ -169,12 +187,18 @@ public class MatchService {
         List<ShortMatchInfoDTO> shortMatchInfoDTOList
                 = internalMapper.toShortMatchInfoDTOList(filteredMatches);
 
+        int totalPages = countTotalPages(totalMatches);
+        log.info("Found finished matches: totalMatches={}, page={}, totalPages={}, playerName={}",
+                totalMatches,
+                page,
+                totalPages,
+                playerName
+        );
         return new FinishedMatchesEssentialInfoDTO(
                 shortMatchInfoDTOList,
                 page,
-                countTotalPages(totalMatches));
+                totalPages);
     }
-
 
     private int countTotalPages(long totalMatches) {
         return (int) Math.ceil((double) totalMatches

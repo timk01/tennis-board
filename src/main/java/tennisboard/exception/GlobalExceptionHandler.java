@@ -1,5 +1,6 @@
 package tennisboard.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import tennisboard.response.ErrorResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Map<Class<? extends BaseAppException>, HttpStatus> HTTP_STATUS_MAP = new HashMap<>();
@@ -29,20 +31,42 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 exception.getMessage()
         );
-        //toDo logger for ex ?
+
+        log.warn(
+                "Handled application exception happened during program work with status: {}; Exception stack:",
+                status,
+                exception
+        );
+
         return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleSpringMVCException() {
+    public ResponseEntity<ErrorResponse> handleSpringMVCException(MethodArgumentTypeMismatchException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        log.error(
+                "MethodArgumentTypeMismatchException happened during program work with status: {}; Exception stack:",
+                status,
+                exception
+        );
+
         return new ResponseEntity<>(
                 new ErrorResponse("Invalid request parameter"),
-                HttpStatus.BAD_REQUEST
+                status
         );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnknownException() {
+    public ResponseEntity<ErrorResponse> handleUnknownException(Exception exception) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        log.error(
+                "Unknown exception happened during program work with status: {}; Exception stack:",
+                status,
+                exception
+        );
+
         return new ResponseEntity<>(
                 new ErrorResponse("Unknown exception"),
                 HttpStatus.INTERNAL_SERVER_ERROR
