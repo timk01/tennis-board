@@ -102,12 +102,6 @@ public class MatchService {
                     MatchSnapshot snapshot = internalMapper.toMatchSnapshot(match);
                     finishedMatchService.saveMatch(match, uuid);
                     ongoingMatchesStorage.remove(uuid, match);
-                    log.debug("Match is finished and removed, has id: UUID={}, player1Name={}, player2Name={}, winner={}",
-                            match.getMatchId(),
-                            match.getPlayer1().getName(),
-                            match.getPlayer2().getName(),
-                            match.getWinner().getName()
-                    );
                     return snapshot;
                 }
             } else {
@@ -115,12 +109,6 @@ public class MatchService {
                         "Match is found, yet is already finished!"
                 );
             }
-
-            log.debug("Ongoing match has id: UUID={}, player1Name={}, player2Name={}",
-                    match.getMatchId(),
-                    match.getPlayer1().getName(),
-                    match.getPlayer2().getName()
-            );
             return internalMapper.toMatchSnapshot(match);
         }
     }
