@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import tennisboard.entity.MatchEntity;
@@ -234,7 +235,9 @@ public class MatchesIntegrationTest {
      * после метода происходит подчистка БД
      *
      * @throws Exception
+     * @Transactional - потому что иначе свалится (лазает в БД напрямую в обход ентитиМенеджера)
      */
+    @Transactional
     @Test
     public void gettingOneWinnerFromSeveralMatchesWorksFine() throws Exception {
         String firstPlayerName = testPrefix + "agassi";
@@ -265,6 +268,7 @@ public class MatchesIntegrationTest {
                 .andExpect(jsonPath("$.totalPages").value(1));
     }
 
+    @Transactional
     @Test
     public void gettingZeroPagesWithPlayerNameOutsideTable() throws Exception {
         String firstPlayerName = testPrefix + "agassi";

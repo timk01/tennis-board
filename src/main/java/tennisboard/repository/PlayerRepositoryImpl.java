@@ -17,15 +17,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     @Override
     public PlayerEntity save(PlayerEntity player) {
         try {
             em.persist(player);
             em.flush();
-        } catch (DataIntegrityViolationException exception) {
+        } catch (PersistenceException exception) {
             throw new PlayerNameAlreadyExistsException(String.format(
-                    "Cannot save player %s due to data integrity violation", player.getName()
+                    "Cannot save player %s due to persistence error", player.getName()
             ));
         }
         return player;

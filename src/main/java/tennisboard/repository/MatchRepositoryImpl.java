@@ -14,7 +14,6 @@ public class MatchRepositoryImpl implements MatchRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     @Override
     public MatchEntity save(MatchEntity match) {
         em.persist(match);

@@ -3,6 +3,7 @@ package tennisboard.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
 import tennisboard.dto.MatchSnapshot;
@@ -153,6 +154,7 @@ public class MatchService {
      * - сколько всего страниц есть у данного игрока в БД
      */
 
+    @Transactional(readOnly = true)
     public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
         validatePageNumber(page);
 
