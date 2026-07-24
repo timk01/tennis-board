@@ -23,9 +23,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             em.persist(player);
             em.flush();
         } catch (PersistenceException exception) {
-            throw new PlayerNameAlreadyExistsException(String.format(
-                    "Cannot save player %s due to persistence error", player.getName()
-            ));
+            throw new PlayerNameAlreadyExistsException(
+                    String.format("Cannot save player %s due to persistence error", player.getName()),
+                    exception
+            );
         }
         return player;
     }
