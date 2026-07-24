@@ -2,7 +2,7 @@ package tennisboard.service.logic;
 
 import lombok.Getter;
 
-import java.util.List;
+import java.util.Optional;
 
 public class MatchScore {
     private static final int MINIMUM_ROUNDS_FOR_WIN_GAME = 4;
@@ -13,7 +13,6 @@ public class MatchScore {
     private static final int MINIMUM_ROUNDS_TO_WIN_TIE_BREAK = 7;
     private static final int MINIMUM_ADVANTAGE = 2;
     private static final int MINIMUM_SETS_TO_WIN = 2;
-    private static final List<Integer> BASIC_GAME_POINTS = List.of(0, 15, 30, 40);
 
     @Getter
     private int pointA;
@@ -43,16 +42,12 @@ public class MatchScore {
     @Getter
     private StatusOfSet statusOfSet = StatusOfSet.REGULAR_SET;
 
-    private boolean isMatchFinished;
-    private Side winner;
-    private Side loser;
-
     public void increasePoint(Side side) {
         if (side == null) {
             throw new IllegalArgumentException("Side should be not null");
         }
 
-        if (isMatchFinished) {
+        if (isMatchFinished()) {
             return;
         }
 
@@ -71,7 +66,8 @@ public class MatchScore {
             }
 
             if (roundA <= MAXIMUM_NORMAL_ROUNDS) {
-                pointA = BASIC_GAME_POINTS.get(roundA);
+                pointA = GamePoints.getPointByRound(roundA);
+                //pointA = BASIC_GAME_POINTS.get(roundA);
             }
         } else {
             roundB++;
@@ -83,7 +79,8 @@ public class MatchScore {
             }
 
             if (roundB <= MAXIMUM_NORMAL_ROUNDS) {
-                pointB = BASIC_GAME_POINTS.get(roundB);
+                pointB = GamePoints.getPointByRound(roundB);
+                //pointB = BASIC_GAME_POINTS.get(roundB);
             }
         }
 
@@ -97,7 +94,6 @@ public class MatchScore {
             if (roundA >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundA - roundB >= MINIMUM_ADVANTAGE)) {
                 gameA++;
                 setA++;
-                processMatchResult();
                 resetGame();
                 resetSet();
                 resetTieBreak();
@@ -108,7 +104,6 @@ public class MatchScore {
             if (roundB >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundB - roundA >= MINIMUM_ADVANTAGE)) {
                 gameB++;
                 setB++;
-                processMatchResult();
                 resetGame();
                 resetSet();
                 resetTieBreak();
@@ -132,13 +127,11 @@ public class MatchScore {
         if (side == Side.A) {
             if (isSetWon(gameA, gameB)) {
                 setA++;
-                processMatchResult();
                 resetSet();
             }
         } else {
             if (isSetWon(gameB, gameA)) {
                 setB++;
-                processMatchResult();
                 resetSet();
             }
         }
@@ -163,20 +156,6 @@ public class MatchScore {
 
     private boolean isSetWon(int gamesWon, int opponentGamesWon) {
         return gamesWon >= MINIMUM_GAMES_FOR_WIN_SET && (gamesWon - opponentGamesWon >= MINIMUM_ADVANTAGE);
-    }
-
-    private void processMatchResult() {
-        if (setA == MINIMUM_SETS_TO_WIN) {
-            isMatchFinished = true;
-            winner = Side.A;
-            loser = Side.B;
-        }
-
-        if (setB == MINIMUM_SETS_TO_WIN) {
-            isMatchFinished = true;
-            winner = Side.B;
-            loser = Side.A;
-        }
     }
 
     private void resetGame() {
@@ -208,14 +187,22 @@ public class MatchScore {
     }
 
     public Side getWinner() {
-        if (!isMatchFinished) {
-            throw new IllegalStateException("Match isn't finished yet");
+        return winningSide().orElseThrow(() -> new IllegalStateException("Match isn't finished yet"));
+    }
+
+    private Optional<Side> winningSide() {
+        if (setA == MINIMUM_SETS_TO_WIN) {
+            return Optional.of(Side.A);
         }
 
-        return winner;
+        if (setB == MINIMUM_SETS_TO_WIN) {
+            return Optional.of(Side.B);
+        }
+
+        return Optional.empty();
     }
 
     public boolean isMatchFinished() {
-        return isMatchFinished;
+        return winningSide().isPresent();
     }
 }

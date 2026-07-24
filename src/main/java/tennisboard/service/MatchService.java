@@ -97,7 +97,7 @@ public class MatchService {
                 name = name.trim().toLowerCase();
                 Side side = getSide(name, match);
 
-                match.getMatchScore().increasePoint(side);
+                match.increasePoint(side);
                 if (match.isFinished()) {
                     MatchSnapshot snapshot = internalMapper.toMatchSnapshot(match);
                     finishedMatchService.saveMatch(match, uuid);

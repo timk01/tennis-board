@@ -25,4 +25,8 @@ public class Match {
 
         return player2;
     }
+
+    public void increasePoint(Side side) {
+        getMatchScore().increasePoint(side);
+    }
 }
