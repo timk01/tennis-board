@@ -21,7 +21,7 @@ public class PlayerEntity {
     private int id;
 
     @Setter
-    @Column(name = "name")
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
 
     public PlayerEntity(String name) {

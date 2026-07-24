@@ -1,22 +1,22 @@
 create table players
 (
     id   serial primary key,
-    name varchar(255)       not null
+    name varchar(100) not null
 );
 
 
 create table matches
 (
-    id serial primary key,
+    id      serial primary key,
 
     player1 int not null,
-    constraint fk_matches_player1 foreign key (player1) references players(id),
+    constraint fk_matches_player1 foreign key (player1) references players (id),
 
     player2 int not null,
-    constraint fk_matches_player2 foreign key (player2) references players(id),
+    constraint fk_matches_player2 foreign key (player2) references players (id),
 
-    winner int not null,
-    constraint fk_matches_winner foreign key (winner) references players(id),
+    winner  int not null,
+    constraint fk_matches_winner foreign key (winner) references players (id),
 
     constraint players_are_different check (player1 <> player2),
 
