@@ -1,6 +1,6 @@
 package tennisboard.dto;
 
-public record ShortMatchInfoDTO(
+public record ShortMatchInfoDto(
         String firstPlayerName,
         String secondPlayerName,
         String winnerName

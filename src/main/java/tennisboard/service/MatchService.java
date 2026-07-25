@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
+import tennisboard.dto.FinishedMatchesEssentialInfoDto;
 import tennisboard.dto.MatchSnapshot;
-import tennisboard.dto.ShortMatchInfoDTO;
+import tennisboard.dto.ShortMatchInfoDto;
 import tennisboard.entity.MatchEntity;
 import tennisboard.exception.MatchAlreadyFinishedException;
 import tennisboard.exception.MatchIsNotFoundException;
@@ -155,7 +155,7 @@ public class MatchService {
      */
 
     @Transactional(readOnly = true)
-    public FinishedMatchesEssentialInfoDTO getFinishedMatches(int page, String playerName) {
+    public FinishedMatchesEssentialInfoDto getFinishedMatches(int page, String playerName) {
         validatePageNumber(page);
 
         int offset = (page - 1) * PAGE_ELEMENTS_SIZE;
@@ -174,7 +174,7 @@ public class MatchService {
             totalMatches = matchRepository.countAllMatches();
         }
 
-        List<ShortMatchInfoDTO> shortMatchInfoDTOList
+        List<ShortMatchInfoDto> shortMatchInfoDTOList
                 = internalMapper.toShortMatchInfoDTOList(filteredMatches);
 
         int totalPages = countTotalPages(totalMatches);
@@ -184,7 +184,7 @@ public class MatchService {
                 totalPages,
                 playerName
         );
-        return new FinishedMatchesEssentialInfoDTO(
+        return new FinishedMatchesEssentialInfoDto(
                 shortMatchInfoDTOList,
                 page,
                 totalPages);

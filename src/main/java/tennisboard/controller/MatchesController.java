@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
+import tennisboard.dto.FinishedMatchesEssentialInfoDto;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.mapper.MatchResponseMapper;
 import tennisboard.request.CreateMatchRequest;
@@ -14,7 +14,6 @@ import tennisboard.response.FinishedMatchesEssentialInfoResponse;
 import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.MatchService;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -64,7 +63,7 @@ public class MatchesController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "player_name", required = false) String playerName
     ) {
-        FinishedMatchesEssentialInfoDTO finishedMatches
+        FinishedMatchesEssentialInfoDto finishedMatches
                 = matchService.getFinishedMatches(page, playerName);
 
         return new ResponseEntity<>(

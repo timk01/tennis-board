@@ -2,8 +2,8 @@ package tennisboard.dto;
 
 import java.util.List;
 
-public record FinishedMatchesEssentialInfoDTO(
-        List<ShortMatchInfoDTO> matches,
+public record FinishedMatchesEssentialInfoDto(
+        List<ShortMatchInfoDto> matches,
         int currentPage,
         int totalPages
 ) {

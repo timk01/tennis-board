@@ -3,7 +3,6 @@ package tennisboard.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import tennisboard.entity.MatchEntity;
 
 import java.util.List;

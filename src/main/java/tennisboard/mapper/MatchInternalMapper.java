@@ -3,7 +3,7 @@ package tennisboard.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import tennisboard.dto.MatchSnapshot;
-import tennisboard.dto.ShortMatchInfoDTO;
+import tennisboard.dto.ShortMatchInfoDto;
 import tennisboard.entity.MatchEntity;
 import tennisboard.mapper.calculator.MatchScoreFieldsCalculator;
 import tennisboard.service.logic.Match;
@@ -32,7 +32,7 @@ public interface MatchInternalMapper {
     @Mapping(source = "firstPlayer.name", target = "firstPlayerName")
     @Mapping(source = "secondPlayer.name", target = "secondPlayerName")
     @Mapping(source = "winner.name", target = "winnerName")
-    ShortMatchInfoDTO toShortMatchInfoDTO(MatchEntity matchEntity);
+    ShortMatchInfoDto toShortMatchInfoDTO(MatchEntity matchEntity);
 
-    List<ShortMatchInfoDTO> toShortMatchInfoDTOList(List<MatchEntity> entities);
+    List<ShortMatchInfoDto> toShortMatchInfoDTOList(List<MatchEntity> entities);
 }

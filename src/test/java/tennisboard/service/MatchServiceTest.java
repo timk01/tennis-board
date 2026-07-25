@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
+import tennisboard.dto.FinishedMatchesEssentialInfoDto;
 import tennisboard.dto.MatchSnapshot;
-import tennisboard.dto.ShortMatchInfoDTO;
+import tennisboard.dto.ShortMatchInfoDto;
 import tennisboard.entity.MatchEntity;
 import tennisboard.entity.PlayerEntity;
 import tennisboard.exception.MatchIsNotFoundException;
@@ -290,13 +290,13 @@ class MatchServiceTest {
         when(matchRepository.findAllMatchesByPlayerNameFiltered(0, 5, playerName))
                 .thenReturn(matches);
 
-        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
-                new ShortMatchInfoDTO(
+        List<ShortMatchInfoDto> convertedShortMatchesDto = new ArrayList<>(List.of(
+                new ShortMatchInfoDto(
                         playerName,
                         opponentName,
                         playerName
                 ),
-                new ShortMatchInfoDTO(
+                new ShortMatchInfoDto(
                         playerName,
                         opponentName,
                         opponentName
@@ -309,12 +309,12 @@ class MatchServiceTest {
                 .thenReturn((long) playerMatches);
 
         int page = 1;
-        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+        FinishedMatchesEssentialInfoDto expected = new FinishedMatchesEssentialInfoDto(
                 convertedShortMatchesDto,
                 page,
                 1);
 
-        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, playerName);
+        FinishedMatchesEssentialInfoDto result = service.getFinishedMatches(1, playerName);
 
         assertThat(result).isEqualTo(expected);
 
@@ -335,7 +335,7 @@ class MatchServiceTest {
         when(matchRepository.findAllMatchesByPlayerNameFiltered(0, 5, playerName))
                 .thenReturn(emptyMatches);
 
-        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
+        List<ShortMatchInfoDto> convertedShortMatchesDto = new ArrayList<>(List.of(
         ));
         when(internalMapper.toShortMatchInfoDTOList(emptyMatches)).thenReturn(convertedShortMatchesDto);
 
@@ -344,12 +344,12 @@ class MatchServiceTest {
                 .thenReturn((long) playerMatches);
 
         int page = 1;
-        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+        FinishedMatchesEssentialInfoDto expected = new FinishedMatchesEssentialInfoDto(
                 convertedShortMatchesDto,
                 page,
                 0);
 
-        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, playerName);
+        FinishedMatchesEssentialInfoDto result = service.getFinishedMatches(1, playerName);
 
         assertThat(result).isEqualTo(expected);
 
@@ -381,13 +381,13 @@ class MatchServiceTest {
         when(matchRepository.findAllMatchesFiltered(0, 5))
                 .thenReturn(matches);
 
-        List<ShortMatchInfoDTO> convertedShortMatchesDto = new ArrayList<>(List.of(
-                new ShortMatchInfoDTO(
+        List<ShortMatchInfoDto> convertedShortMatchesDto = new ArrayList<>(List.of(
+                new ShortMatchInfoDto(
                         playerName,
                         opponentName,
                         playerName
                 ),
-                new ShortMatchInfoDTO(
+                new ShortMatchInfoDto(
                         playerName,
                         opponentName,
                         opponentName
@@ -400,12 +400,12 @@ class MatchServiceTest {
                 .thenReturn((long) playerMatches);
 
         int page = 1;
-        FinishedMatchesEssentialInfoDTO expected = new FinishedMatchesEssentialInfoDTO(
+        FinishedMatchesEssentialInfoDto expected = new FinishedMatchesEssentialInfoDto(
                 convertedShortMatchesDto,
                 page,
                 1);
 
-        FinishedMatchesEssentialInfoDTO result = service.getFinishedMatches(1, null);
+        FinishedMatchesEssentialInfoDto result = service.getFinishedMatches(1, null);
 
         assertThat(result).isEqualTo(expected);
 

@@ -2,7 +2,7 @@ package tennisboard.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import tennisboard.dto.FinishedMatchesEssentialInfoDTO;
+import tennisboard.dto.FinishedMatchesEssentialInfoDto;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.response.CreateMatchResponse;
 import tennisboard.response.FinishedMatchesEssentialInfoResponse;
@@ -19,5 +19,5 @@ public interface MatchResponseMapper {
 
     MatchScoreResponse toMatchScoreResponse(MatchSnapshot matchSnapshot);
 
-    FinishedMatchesEssentialInfoResponse toFinishedMatchesEssentialInfoResponse(FinishedMatchesEssentialInfoDTO info);
+    FinishedMatchesEssentialInfoResponse toFinishedMatchesEssentialInfoResponse(FinishedMatchesEssentialInfoDto info);
 }

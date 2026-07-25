@@ -8,5 +8,4 @@ import lombok.Getter;
 public class Player {
     private final Long id;
     private final String name;
-
 }

@@ -67,7 +67,6 @@ public class MatchScore {
 
             if (roundA <= MAXIMUM_NORMAL_ROUNDS) {
                 pointA = GamePoints.getPointByRound(roundA);
-                //pointA = BASIC_GAME_POINTS.get(roundA);
             }
         } else {
             roundB++;
@@ -80,7 +79,6 @@ public class MatchScore {
 
             if (roundB <= MAXIMUM_NORMAL_ROUNDS) {
                 pointB = GamePoints.getPointByRound(roundB);
-                //pointB = BASIC_GAME_POINTS.get(roundB);
             }
         }
 
