@@ -1,4 +1,10 @@
+db.driver.name=org.postgresql.Driver
 db.url=jdbc:postgresql://localhost:5432/YOUR_DATABASE_NAME
 db.username=YOUR_USERNAME
 db.password=YOUR_PASSWORD
 db.pool.size=20
+
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+hibernate.hbm2ddl.auto=none
+hibernate.show_sql=true
+hibernate.format_sql=true
