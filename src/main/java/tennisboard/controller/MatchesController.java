@@ -1,8 +1,13 @@
 package tennisboard.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tennisboard.dto.FinishedMatchesEssentialInfoDto;
 import tennisboard.dto.MatchSnapshot;
@@ -18,6 +23,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/matches")
 public class MatchesController {
     private final MatchService matchService;
@@ -25,7 +31,7 @@ public class MatchesController {
     private final MatchResponseMapper mapper;
 
     @PostMapping
-    public ResponseEntity<CreateMatchResponse> createNewMatch(@RequestBody CreateMatchRequest request) {
+    public ResponseEntity<CreateMatchResponse> createNewMatch(@RequestBody @Valid CreateMatchRequest request) {
         String name1 = request.firstPlayerName();
         String name2 = request.secondPlayerName();
         UUID matchId = matchService.createNewMatch(name1, name2);
@@ -47,7 +53,7 @@ public class MatchesController {
 
     @PostMapping("/{uuid}/point")
     public ResponseEntity<MatchScoreResponse> addPoint(
-            @RequestBody UpdateMatchRequest request,
+            @RequestBody @Valid UpdateMatchRequest request,
             @PathVariable("uuid") UUID uuid
     ) {
         String name = request.name();
@@ -60,8 +66,8 @@ public class MatchesController {
 
     @GetMapping
     public ResponseEntity<FinishedMatchesEssentialInfoResponse> getFinishedMatches(
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "player_name", required = false) String playerName
+            @RequestParam(name = "page", defaultValue = "1") @Min(1) int page,
+            @RequestParam(name = "player_name", required = false) @Size(max = 100) String playerName
     ) {
         FinishedMatchesEssentialInfoDto finishedMatches
                 = matchService.getFinishedMatches(page, playerName);

@@ -1,8 +1,10 @@
 package tennisboard.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -10,6 +12,7 @@ import tennisboard.response.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -42,11 +45,49 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleSpringMVCException(MethodArgumentTypeMismatchException exception) {
+    public ResponseEntity<ErrorResponse> handleSpringMvcException(MethodArgumentTypeMismatchException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         log.error(
                 "MethodArgumentTypeMismatchException happened during program work with status: {}; Exception stack:",
+                status,
+                exception
+        );
+
+        return new ResponseEntity<>(
+                new ErrorResponse("Invalid request parameter"),
+                status
+        );
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        log.warn(
+                "MethodArgumentNotValidException happened during program work with status: {}; Validation errors: {}",
+                status,
+                exception.getBindingResult().getFieldErrors().stream()
+                        .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                        .collect(Collectors.joining(System.lineSeparator()))
+        );
+
+        return new ResponseEntity<>(
+                new ErrorResponse("Validation failed"),
+                status
+        );
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+            ConstraintViolationException exception
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        log.warn(
+                "ConstraintViolationException happened during program work with status: {}; Exception stack:",
                 status,
                 exception
         );

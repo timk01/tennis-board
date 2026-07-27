@@ -107,10 +107,16 @@ database.properties
 Пример локальных настроек:
 
 ```properties
-db.url=jdbc:postgresql://localhost:5432/tennis_board
-db.username=postgres
-db.password=your_password
+db.driver.name=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/YOUR_DATABASE_NAME
+db.username=YOUR_USERNAME
+db.password=YOUR_PASSWORD
 db.pool.size=20
+
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+hibernate.hbm2ddl.auto=none
+hibernate.show_sql=true
+hibernate.format_sql=true
 ```
 
 Файл `database.properties` не должен попадать в Git. В репозитории хранится только шаблон `database.properties.origin`.
