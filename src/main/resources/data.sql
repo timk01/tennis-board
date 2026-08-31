@@ -1,11 +1,11 @@
-insert into players(name)
+insert into players_table(name)
 values ('agassi'),
        ('federer'),
        ('nadal'),
        ('djokovic'),
        ('sampras');
 
-insert into matches(player1, player2, winner)
+insert into matches_table(player1_id, player2_id, winner_id)
 values (1, 2, 1),
        (1, 2, 2),
        (2, 1, 1),
@@ -15,3 +15,10 @@ values (1, 2, 1),
        (4, 5, 4),
        (4, 3, 3),
        (3, 2, 2);
+
+
+drop table if exists matches cascade;
+drop table if exists players cascade;
+
+drop table if exists matches_table cascade;
+drop table if exists players_table cascade;

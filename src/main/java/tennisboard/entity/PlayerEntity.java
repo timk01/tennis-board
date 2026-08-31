@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(
-        name = "players",
+        name = "players_table",
         indexes = {@Index(name = "index_players_name", columnList = "name", unique = true)}
 )
 
@@ -19,7 +19,7 @@ public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Setter
     @Column(name = "name", length = 100, nullable = false)

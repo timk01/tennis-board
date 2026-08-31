@@ -21,6 +21,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import tennisboard.entity.MatchEntity;
 import tennisboard.entity.PlayerEntity;
+import tennisboard.exception.PlayerNameAlreadyExistsException;
 import tennisboard.repository.MatchRepository;
 import tennisboard.repository.PlayerRepository;
 import tennisboard.request.CreateMatchRequest;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -293,6 +295,24 @@ public class MatchesIntegrationTest {
                 .andExpect(jsonPath("$.matches.size()").value(0))
                 .andExpect(jsonPath("$.currentPage").value(1))
                 .andExpect(jsonPath("$.totalPages").value(0));
+    }
+
+    @Test
+    public void savingPlayerFailsSinceNameAlreadyExists() {
+        String playerName = testPrefix + "agassi";
+
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+
+        transactionTemplate.executeWithoutResult(status ->
+                playerRepository.save(new PlayerEntity(playerName))
+        );
+
+        assertThrows(
+                PlayerNameAlreadyExistsException.class,
+                () -> transactionTemplate.executeWithoutResult(status ->
+                        playerRepository.save(new PlayerEntity(playerName))
+                )
+        );
     }
 
     private List<MatchEntity> prepareMatchesWithDifferentWinners(

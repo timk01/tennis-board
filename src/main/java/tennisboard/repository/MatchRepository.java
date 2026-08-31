@@ -5,7 +5,7 @@ import tennisboard.entity.MatchEntity;
 import java.util.List;
 
 public interface MatchRepository {
-    MatchEntity save(MatchEntity match);
+    MatchEntity save(MatchEntity matchEntity);
 
     List<MatchEntity> findAllMatchesFiltered(int offset, int limit);
 

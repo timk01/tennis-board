@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface PlayerRepository {
 
-    PlayerEntity save(PlayerEntity player);
+    PlayerEntity save(PlayerEntity playerEntity);
 
     Optional<PlayerEntity> findByName(String name);
 

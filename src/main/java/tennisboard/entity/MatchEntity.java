@@ -5,29 +5,30 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "matches")
+@Table(name = "matches_table")
 public class MatchEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "player1", nullable = false)
+    @JoinColumn(name = "player1_id", nullable = false)
     private PlayerEntity firstPlayer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "player2", nullable = false)
+    @JoinColumn(name = "player2_id", nullable = false)
     private PlayerEntity secondPlayer;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "winner", nullable = false)
+    @JoinColumn(name = "winner_id", nullable = false)
     private PlayerEntity winner;
 
     public MatchEntity(PlayerEntity firstPlayer, PlayerEntity secondPlayer, PlayerEntity winner) {
