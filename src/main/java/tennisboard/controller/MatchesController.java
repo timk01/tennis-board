@@ -14,8 +14,6 @@ import tennisboard.mapper.MatchResponseMapper;
 import tennisboard.request.CreateMatchRequest;
 import tennisboard.request.UpdateMatchRequest;
 import tennisboard.response.CreateMatchResponse;
-import tennisboard.response.FinishedMatchesEssentialInfoResponse;
-import tennisboard.response.MatchScoreResponse;
 import tennisboard.service.MatchService;
 
 import java.util.UUID;
@@ -42,16 +40,17 @@ public class MatchesController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<MatchScoreResponse> getMatchStats(@PathVariable("uuid") UUID uuid) {
+    public ResponseEntity<MatchSnapshot> getMatchStats(@PathVariable("uuid") UUID uuid) {
         MatchSnapshot snapshot = matchService.getMatchSnapshot(uuid);
 
         return new ResponseEntity<>(
-                mapper.toMatchScoreResponse(snapshot),
-                HttpStatus.OK);
+                snapshot,
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/{uuid}/point")
-    public ResponseEntity<MatchScoreResponse> addPoint(
+    public ResponseEntity<MatchSnapshot> addPoint(
             @RequestBody @Valid UpdateMatchRequest request,
             @PathVariable("uuid") UUID uuid
     ) {
@@ -59,12 +58,13 @@ public class MatchesController {
         MatchSnapshot snapshot = matchService.addPoint(name, uuid);
 
         return new ResponseEntity<>(
-                mapper.toMatchScoreResponse(snapshot),
-                HttpStatus.OK);
+                snapshot,
+                HttpStatus.OK
+        );
     }
 
     @GetMapping
-    public ResponseEntity<FinishedMatchesEssentialInfoResponse> getFinishedMatches(
+    public ResponseEntity<FinishedMatchesEssentialInfoDto> getFinishedMatches(
             @RequestParam(name = "page", defaultValue = "1") @Min(1) int page,
             @RequestParam(name = "player_name", required = false) @Size(max = 100) String playerName
     ) {
@@ -72,7 +72,8 @@ public class MatchesController {
                 = matchService.getFinishedMatches(page, playerName);
 
         return new ResponseEntity<>(
-                mapper.toFinishedMatchesEssentialInfoResponse(finishedMatches),
-                HttpStatus.OK);
+                finishedMatches,
+                HttpStatus.OK
+        );
     }
 }
