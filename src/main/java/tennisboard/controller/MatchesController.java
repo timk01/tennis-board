@@ -29,9 +29,9 @@ public class MatchesController {
 
     @PostMapping
     public ResponseEntity<CreateMatchResponse> createNewMatch(@RequestBody @Valid CreateMatchRequest request) {
-        String name1 = request.firstPlayerName();
-        String name2 = request.secondPlayerName();
-        UUID matchId = matchService.createNewMatch(name1, name2);
+        String firstPlayerName = request.firstPlayerName();
+        String secondPlayerName = request.secondPlayerName();
+        UUID matchId = matchService.createNewMatch(firstPlayerName, secondPlayerName);
 
         return new ResponseEntity<>(
                 mapper.toCreateMatchResponse(matchId),
