@@ -52,7 +52,7 @@ class FinishedMatchServiceTest {
         when(playerRepository.findByName(player2Name)).thenReturn(playerEntity2);
 
         Match match = preparedFinishedMatchWithWinnerA(player1Name, player2Name);
-        finishedMatchService.saveMatch(match, match.getMatchId());
+        finishedMatchService.saveMatch(match);
 
         verify(playerRepository, times(1)).findByName(player1Name);
         verify(playerRepository, times(1)).findByName(player2Name);
@@ -84,7 +84,7 @@ class FinishedMatchServiceTest {
         when(playerRepository.findByName(player2Name)).thenReturn(playerEntity2);
 
         Match match = preparedFinishedMatchWithWinnerA(player1Name, player2Name);
-        finishedMatchService.saveMatch(match, match.getMatchId());
+        finishedMatchService.saveMatch(match);
 
         verify(playerRepository, times(1)).findByName(player1Name);
         verify(playerRepository, times(1)).findByName(player2Name);
@@ -118,7 +118,7 @@ class FinishedMatchServiceTest {
         when(playerRepository.save(any(PlayerEntity.class))).thenReturn(playerEntity2.get());
 
         Match match = preparedFinishedMatchWithWinnerB(player1Name, player2Name);
-        finishedMatchService.saveMatch(match, match.getMatchId());
+        finishedMatchService.saveMatch(match);
 
         verify(playerRepository, times(1)).findByName(player1Name);
         verify(playerRepository, times(1)).findByName(player2Name);
@@ -140,8 +140,8 @@ class FinishedMatchServiceTest {
         UUID id = UUID.randomUUID();
         return new Match(
                 id,
-                new Player(null, playerName1),
-                new Player(null, playerName2),
+                new Player( playerName1),
+                new Player( playerName2),
                 new MatchScore()
         );
     }

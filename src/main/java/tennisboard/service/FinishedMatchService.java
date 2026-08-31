@@ -11,7 +11,6 @@ import tennisboard.repository.PlayerRepository;
 import tennisboard.service.logic.Match;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,35 +21,39 @@ public class FinishedMatchService {
     private final MatchRepository matchRepository;
 
     @Transactional
-    public void saveMatch(Match match, UUID uuid) {
-        String name1 = match.getPlayer1().getName();
-        Optional<PlayerEntity> optionalPlayer1Entity = playerRepository.findByName(name1);
+    public void saveMatch(Match match) {
+        String firstPlayerName = match.getPlayer1().getName();
+        PlayerEntity firstPlayerEntity = getPlayerEntity(firstPlayerName);
 
-        PlayerEntity player1;
-        if (optionalPlayer1Entity.isPresent()) {
-            player1 = optionalPlayer1Entity.get();
-        } else {
-            player1 = playerRepository.save(new PlayerEntity(name1));
-        }
+        String secondPlayerName = match.getPlayer2().getName();
+        PlayerEntity secondPlayerEntity = getPlayerEntity(secondPlayerName);
 
-        String name2 = match.getPlayer2().getName();
-        Optional<PlayerEntity> optionalPlayer2Entity = playerRepository.findByName(name2);
+        PlayerEntity winner = getWinner(match, firstPlayerName, firstPlayerEntity, secondPlayerEntity);
 
-        PlayerEntity player2;
-        if (optionalPlayer2Entity.isPresent()) {
-            player2 = optionalPlayer2Entity.get();
-        } else {
-            player2 = playerRepository.save(new PlayerEntity(name2));
-        }
+        MatchEntity matchEntity = new MatchEntity(firstPlayerEntity, secondPlayerEntity, winner);
+        matchRepository.save(matchEntity);
 
-        PlayerEntity winner = match.getWinner().getName().equals(name1) ? player1 : player2;
-
-        MatchEntity match1 = new MatchEntity(player1, player2, winner);
-        matchRepository.save(match1);
-        log.info("Finished match is saved into matchRepository: UUID={}, player1={}, player2={}, winner={}",
-                uuid,
-                player1,
-                player2,
+        log.info("Finished match is saved into matchRepository: UUID={}, firstPlayerEntity={}, secondPlayerEntity={}, winner={}",
+                match.getMatchId(),
+                firstPlayerEntity,
+                secondPlayerEntity,
                 winner);
+    }
+
+    private PlayerEntity getPlayerEntity(String name) {
+        Optional<PlayerEntity> optionalPlayerEntity = playerRepository.findByName(name);
+        return optionalPlayerEntity.orElseGet(() -> playerRepository.save(new PlayerEntity(name)));
+    }
+
+
+    private PlayerEntity getWinner(
+            Match match,
+            String firstPlayerName,
+            PlayerEntity firstPlayerEntity,
+            PlayerEntity secondPlayerEntity
+    ) {
+        return match.getWinner().getName().equals(firstPlayerName)
+                ? firstPlayerEntity
+                : secondPlayerEntity;
     }
 }

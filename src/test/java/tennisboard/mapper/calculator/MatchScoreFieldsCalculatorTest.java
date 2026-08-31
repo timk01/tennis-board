@@ -19,8 +19,8 @@ class MatchScoreFieldsCalculatorTest {
     @BeforeEach
     void init() {
         UUID uuid = UUID.fromString("1d5e5fb4-5203-4933-8278-486f3d8db2ca");
-        Player player1 = new Player(1L, "Agassi");
-        Player player2 = new Player(2L, "Federerr");
+        Player player1 = new Player("Agassi");
+        Player player2 = new Player("Federerr");
         matchScore = new MatchScore();
         match = new Match(
                 uuid,

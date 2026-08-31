@@ -41,7 +41,6 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -199,8 +198,8 @@ public class MatchesIntegrationTest {
         UUID id = UUID.randomUUID();
         Match match = new Match(
                 id,
-                new Player(null, firstName.toLowerCase()),
-                new Player(null, secondName.toLowerCase()),
+                new Player(firstName.toLowerCase()),
+                new Player(secondName.toLowerCase()),
                 new MatchScore()
         );
         for (int i = 0; i < 47; i++) {

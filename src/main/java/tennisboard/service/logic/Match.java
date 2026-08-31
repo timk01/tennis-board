@@ -1,12 +1,13 @@
 package tennisboard.service.logic;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import tennisboard.exception.MatchAlreadyFinishedException;
 
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Match {
     private final UUID matchId;
     private final Player player1;
@@ -18,15 +19,19 @@ public class Match {
     }
 
     public Player getWinner() {
-        Side winner = matchScore.getWinner();
-        if (winner == Side.A) {
-            return player1;
-        }
-
-        return player2;
+        return switch (matchScore.getWinner()) {
+            case A -> player1;
+            case B -> player2;
+        };
     }
 
     public void increasePoint(Side side) {
+        if (isFinished()) {
+            throw new MatchAlreadyFinishedException(
+                    "Match is already finished!"
+            );
+        }
+
         getMatchScore().increasePoint(side);
     }
 }

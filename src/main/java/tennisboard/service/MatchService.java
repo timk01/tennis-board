@@ -22,7 +22,6 @@ import tennisboard.service.logic.Side;
 import tennisboard.storage.OngoingMatchesStorage;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -41,15 +40,15 @@ public class MatchService {
         validatePlayerName(firstPlayerName);
         validatePlayerName(secondPlayerName);
 
-        String normalizedFirstPlayerName = firstPlayerName.trim().toLowerCase();
-        String normalizedSecondPlayerName = secondPlayerName.trim().toLowerCase();
+        String normalizedFirstPlayerName = normalizePlayerName(firstPlayerName);
+        String normalizedSecondPlayerName = normalizePlayerName(secondPlayerName);
         validatePlayersNames(normalizedFirstPlayerName, normalizedSecondPlayerName);
 
         UUID id = UUID.randomUUID();
         Match match = new Match(
                 id,
-                new Player(null, normalizedFirstPlayerName),
-                new Player(null, normalizedSecondPlayerName),
+                new Player(normalizedFirstPlayerName),
+                new Player(normalizedSecondPlayerName),
                 new MatchScore()
         );
 
@@ -91,27 +90,30 @@ public class MatchService {
     public MatchSnapshot addPoint(String name, UUID uuid) {
         Match match = getMatch(uuid);
 
+        validatePlayerName(name);
+        String normalizedName = normalizePlayerName(name);
+
         synchronized (match) {
-            if (!match.isFinished()) {
-                validatePlayerName(name);
-
-                name = name.trim().toLowerCase();
-                Side side = getSide(name, match);
-
-                match.increasePoint(side);
-                if (match.isFinished()) {
-                    MatchSnapshot snapshot = internalMapper.toMatchSnapshot(match);
-                    finishedMatchService.saveMatch(match, uuid);
-                    ongoingMatchesStorage.remove(uuid, match);
-                    return snapshot;
-                }
-            } else {
+            if (match.isFinished()) {
                 throw new MatchAlreadyFinishedException(
                         "Match is found, yet is already finished!"
                 );
             }
+
+            Side side = getSide(normalizedName, match);
+            match.increasePoint(side);
+
+            if (match.isFinished()) {
+                finishedMatchService.saveMatch(match);
+                ongoingMatchesStorage.remove(uuid, match);
+            }
+
             return internalMapper.toMatchSnapshot(match);
         }
+    }
+
+    private static String normalizePlayerName(String name) {
+        return name.trim().toLowerCase();
     }
 
     private Side getSide(String name, Match match) {
@@ -134,14 +136,10 @@ public class MatchService {
                     "ID cannot be null");
         }
 
-        Optional<Match> optionalMatch = ongoingMatchesStorage.findById(uuid);
-        if (optionalMatch.isEmpty()) {
-            throw new MatchIsNotFoundException(String.format(
-                    "Cannot find match with ID: %s", uuid
-            ));
-        }
-
-        return optionalMatch.get();
+        return ongoingMatchesStorage.findById(uuid)
+                .orElseThrow(() -> new MatchIsNotFoundException(
+                        String.format("Cannot find match with ID: %s", uuid)
+                ));
     }
 
     /**
@@ -164,7 +162,7 @@ public class MatchService {
         long totalMatches;
 
         if (StringUtils.hasText(playerName)) {
-            playerName = playerName.toLowerCase().trim();
+            playerName = normalizePlayerName(playerName);
             filteredMatches =
                     matchRepository.findAllMatchesByPlayerNameFiltered(offset, PAGE_ELEMENTS_SIZE, playerName);
             totalMatches = matchRepository.countMatchesPlayedByPlayer(playerName);

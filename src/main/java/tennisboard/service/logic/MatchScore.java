@@ -9,9 +9,9 @@ public class MatchScore {
     private static final int MINIMUM_ROUNDS_FOR_GETTING_GAME_ADVANTAGE = 1;
     private static final int MAXIMUM_NORMAL_ROUNDS = 3;
     private static final int MINIMUM_GAMES_FOR_WIN_SET = 6;
-    private static final int SET_TIE_BREAK_START = 6;
+    private static final int GAMES_TO_START_TIEBREAK = 6;
     private static final int MINIMUM_ROUNDS_TO_WIN_TIE_BREAK = 7;
-    private static final int MINIMUM_ADVANTAGE = 2;
+    private static final int MINIMUM_DIFFERENCE_TO_WIN = 2;
     private static final int MINIMUM_SETS_TO_WIN = 2;
 
     @Getter
@@ -89,7 +89,7 @@ public class MatchScore {
         if (side == Side.A) {
             roundA++;
 
-            if (roundA >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundA - roundB >= MINIMUM_ADVANTAGE)) {
+            if (roundA >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundA - roundB >= MINIMUM_DIFFERENCE_TO_WIN)) {
                 gameA++;
                 setA++;
                 resetGame();
@@ -99,7 +99,7 @@ public class MatchScore {
         } else {
             roundB++;
 
-            if (roundB >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundB - roundA >= MINIMUM_ADVANTAGE)) {
+            if (roundB >= MINIMUM_ROUNDS_TO_WIN_TIE_BREAK && (roundB - roundA >= MINIMUM_DIFFERENCE_TO_WIN)) {
                 gameB++;
                 setB++;
                 resetGame();
@@ -114,11 +114,12 @@ public class MatchScore {
     }
 
     private boolean isRoundWon(int roundsWon, int opponentRoundsWon) {
-        return roundsWon >= MINIMUM_ROUNDS_FOR_WIN_GAME && (roundsWon - opponentRoundsWon >= MINIMUM_ADVANTAGE);
+        return roundsWon >= MINIMUM_ROUNDS_FOR_WIN_GAME && (roundsWon - opponentRoundsWon >= MINIMUM_DIFFERENCE_TO_WIN);
     }
 
     private void processGameResult(Side side) {
-        if (processTieBreakStart()) {
+        if (shouldStartTieBreak()) {
+            statusOfSet = StatusOfSet.TIE_BREAK;
             return;
         }
 
@@ -135,12 +136,9 @@ public class MatchScore {
         }
     }
 
-    private boolean processTieBreakStart() {
-        if (gameA == SET_TIE_BREAK_START && gameB == SET_TIE_BREAK_START) {
-            statusOfSet = StatusOfSet.TIE_BREAK;
-            return true;
-        }
-        return false;
+    private boolean shouldStartTieBreak() {
+        return gameA == GAMES_TO_START_TIEBREAK
+                && gameB == GAMES_TO_START_TIEBREAK;
     }
 
     public Integer getTieBreakPointA() {
@@ -153,7 +151,7 @@ public class MatchScore {
 
 
     private boolean isSetWon(int gamesWon, int opponentGamesWon) {
-        return gamesWon >= MINIMUM_GAMES_FOR_WIN_SET && (gamesWon - opponentGamesWon >= MINIMUM_ADVANTAGE);
+        return gamesWon >= MINIMUM_GAMES_FOR_WIN_SET && (gamesWon - opponentGamesWon >= MINIMUM_DIFFERENCE_TO_WIN);
     }
 
     private void resetGame() {

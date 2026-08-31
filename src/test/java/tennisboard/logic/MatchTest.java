@@ -24,8 +24,8 @@ class MatchTest {
     @BeforeEach
     void init() {
         uuid = UUID.fromString("1d5e5fb4-5203-4933-8278-486f3d8db2ca");
-        firstPlayer = new Player(1L, "Agasssi");
-        secondPlayer = new Player(2L, "Federerr");
+        firstPlayer = new Player("Agasssi");
+        secondPlayer = new Player("Federerr");
         matchScore = new MatchScore();
         match = new Match(
                 uuid,

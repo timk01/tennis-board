@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class OngoingMatches implements OngoingMatchesStorage {
+public class InMemoryOngoingMatchesStorage implements OngoingMatchesStorage {
     private final Map<UUID, Match> ongoingMatches = new ConcurrentHashMap<>();
 
     @Override

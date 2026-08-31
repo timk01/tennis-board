@@ -1,26 +1,26 @@
 package tennisboard.service.logic;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum GamePoints {
-    LOVE(0, 0),
-    FIFTEEN(1, 15),
-    THIRTY(2, 30),
-    FORTY(3, 40);
 
-    private final int round;
+    LOVE(0),
+    FIFTEEN(15),
+    THIRTY(30),
+    FORTY(40);
+
     private final int point;
 
     public static int getPointByRound(int round) {
-        return Arrays.stream(GamePoints.values())
-                .filter(p -> p.getRound() == round)
-                .map(point -> point.getPoint())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Wrong round!"));
+        return switch (round) {
+            case 0 -> LOVE.point;
+            case 1 -> FIFTEEN.point;
+            case 2 -> THIRTY.point;
+            case 3 -> FORTY.point;
+            default -> throw new IllegalArgumentException("Wrong round!");
+        };
     }
 }

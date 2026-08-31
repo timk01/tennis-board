@@ -19,7 +19,7 @@ import tennisboard.service.logic.Match;
 import tennisboard.service.logic.MatchScore;
 import tennisboard.service.logic.Player;
 import tennisboard.service.logic.Side;
-import tennisboard.storage.OngoingMatches;
+import tennisboard.storage.InMemoryOngoingMatchesStorage;
 import tennisboard.storage.OngoingMatchesStorage;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ class MatchServiceTest {
 
     @BeforeEach
     void init() {
-        storage = new OngoingMatches();
+        storage = new InMemoryOngoingMatchesStorage();
         service = new MatchService(internalMapper, storage, matchRepository, finishedMatchService);
     }
 
@@ -241,7 +241,7 @@ class MatchServiceTest {
 
         assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
         assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.A);
-        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
+        verify(finishedMatchService, times(1)).saveMatch(result.match());
         assertThat(storage.findById(result.id()).isEmpty()).isTrue();
         assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
     }
@@ -265,7 +265,7 @@ class MatchServiceTest {
 
         assertThat(result.match().getMatchScore().isMatchFinished()).isTrue();
         assertThat(result.match().getMatchScore().getWinner()).isEqualTo(Side.B);
-        verify(finishedMatchService, times(1)).saveMatch(result.match(), result.id());
+        verify(finishedMatchService, times(1)).saveMatch(result.match());
         assertThat(storage.findById(result.id()).isEmpty()).isTrue();
         assertThat(actualSnapshot).isEqualTo(expectedSnapshot);
     }
@@ -488,8 +488,8 @@ class MatchServiceTest {
         UUID id = UUID.randomUUID();
         Match match = new Match(
                 id,
-                new Player(null, firstName.toLowerCase()),
-                new Player(null, secondName.toLowerCase()),
+                new Player(firstName.toLowerCase()),
+                new Player(secondName.toLowerCase()),
                 new MatchScore()
         );
 

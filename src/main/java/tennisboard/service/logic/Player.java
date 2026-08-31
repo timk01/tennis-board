@@ -1,11 +1,10 @@
 package tennisboard.service.logic;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Player {
-    private final Long id;
     private final String name;
 }
