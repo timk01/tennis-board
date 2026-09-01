@@ -17,14 +17,14 @@ public class MatchRepositoryImpl implements MatchRepository {
 
     private static final String SELECT_MATCH_IDS_BY_PLAYER_NAME =
             SELECT_MATCH_IDS + """
-            WHERE m.firstPlayer.name = :playerName
-               OR m.secondPlayer.name = :playerName
-            ORDER BY m.id
-            """;
+                    WHERE m.firstPlayer.name = :playerName
+                       OR m.secondPlayer.name = :playerName
+                    ORDER BY m.id DESC
+                    """;
 
     private static final String SELECT_ALL_MATCH_IDS =
             SELECT_MATCH_IDS + """
-            ORDER BY m.id
+            ORDER BY m.id DESC
             """;
 
     private static final String SELECT_MATCH_WITH_FETCH = """
@@ -38,7 +38,7 @@ public class MatchRepositoryImpl implements MatchRepository {
     private static final String SELECT_MATCH_INFO_BY_MATCHES_ID =
             SELECT_MATCH_WITH_FETCH + """
             WHERE m.id IN :matchesId
-            ORDER BY m.id
+            ORDER BY m.id DESC
             """;
 
     private static final String COUNT_MATCHES_BY_PLAYER_NAME = """

@@ -130,6 +130,18 @@ public class MatchesIntegrationTest {
     }
 
     @Test
+    public void createNewMatchFailsSincePlayerNameIsInvalid() throws Exception {
+        CreateMatchRequest request =
+                new CreateMatchRequest("Agassi123", "Federer");
+
+        mockMvc.perform(post("/matches")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     public void createNewMatchFailSinceSameNames() throws Exception {
         CreateMatchRequest request = new CreateMatchRequest("agassi", "Agassi");
 
@@ -261,7 +273,7 @@ public class MatchesIntegrationTest {
                 .andExpect(jsonPath("$.matches.size()").value(2))
                 .andExpect(jsonPath("$.matches[0].firstPlayerName").value(firstPlayerName))
                 .andExpect(jsonPath("$.matches[0].secondPlayerName").value(secondPlayerName))
-                .andExpect(jsonPath("$.matches[0].winnerName").value(firstPlayerName))
+                .andExpect(jsonPath("$.matches[0].winnerName").value(secondPlayerName))
                 .andExpect(jsonPath("$.matches[1].firstPlayerName").value(firstPlayerName))
                 .andExpect(jsonPath("$.matches[1].secondPlayerName").value(secondPlayerName))
                 .andExpect(jsonPath("$.currentPage").value(1))
