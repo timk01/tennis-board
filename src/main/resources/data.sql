@@ -15,10 +15,3 @@ values (1, 2, 1),
        (4, 5, 4),
        (4, 3, 3),
        (3, 2, 2);
-
-
-drop table if exists matches cascade;
-drop table if exists players cascade;
-
-drop table if exists matches_table cascade;
-drop table if exists players_table cascade;
