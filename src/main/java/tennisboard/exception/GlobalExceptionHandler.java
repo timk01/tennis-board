@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleSpringMvcException(MethodArgumentTypeMismatchException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        log.error(
+        log.warn(
                 "MethodArgumentTypeMismatchException happened during program work with status: {}; Exception stack:",
                 status,
                 exception
@@ -66,16 +66,17 @@ public class GlobalExceptionHandler {
     ) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
+        String collectedErrors = exception.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(System.lineSeparator()));
         log.warn(
                 "MethodArgumentNotValidException happened during program work with status: {}; Validation errors: {}",
                 status,
-                exception.getBindingResult().getFieldErrors().stream()
-                        .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                        .collect(Collectors.joining(System.lineSeparator()))
+                collectedErrors
         );
 
         return new ResponseEntity<>(
-                new ErrorResponse("Validation failed"),
+                new ErrorResponse("Validation failed: " + collectedErrors),
                 status
         );
     }
@@ -109,7 +110,7 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(
-                new ErrorResponse("Unknown exception"),
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }

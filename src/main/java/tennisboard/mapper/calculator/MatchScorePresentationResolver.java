@@ -7,7 +7,7 @@ import tennisboard.service.logic.StatusOfGame;
 import tennisboard.service.logic.StatusOfSet;
 
 @Component
-public class MatchScoreFieldsCalculator {
+public class MatchScorePresentationResolver {
 
     @Named("firstPlayerPoints")
     public String getFirstPlayerPoints(Match match) {

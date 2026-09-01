@@ -2,17 +2,18 @@ package tennisboard.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import tennisboard.dto.MatchSnapshot;
 import tennisboard.dto.ShortMatchInfoDto;
 import tennisboard.entity.MatchEntity;
-import tennisboard.mapper.calculator.MatchScoreFieldsCalculator;
+import tennisboard.mapper.calculator.MatchScorePresentationResolver;
 import tennisboard.service.logic.Match;
 
 import java.util.List;
 
 @Mapper(
-        componentModel = "spring",
-        uses = MatchScoreFieldsCalculator.class
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = MatchScorePresentationResolver.class
 )
 public interface MatchInternalMapper {
 

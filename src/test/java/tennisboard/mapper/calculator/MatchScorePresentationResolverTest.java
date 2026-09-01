@@ -11,8 +11,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MatchScoreFieldsCalculatorTest {
-    private MatchScoreFieldsCalculator calculator;
+class MatchScorePresentationResolverTest {
+    private MatchScorePresentationResolver resolver;
     private MatchScore matchScore;
     private Match match;
 
@@ -27,14 +27,14 @@ class MatchScoreFieldsCalculatorTest {
                 player1,
                 player2,
                 matchScore);
-        calculator = new MatchScoreFieldsCalculator();
+        resolver = new MatchScorePresentationResolver();
     }
 
     @Test
     void playerAHasNullPointsIfTieBreak() {
         reachTieBreak();
 
-        String firstPlayerPoints = calculator.getFirstPlayerPoints(match);
+        String firstPlayerPoints = resolver.getFirstPlayerPoints(match);
         assertThat(firstPlayerPoints).isNull();
     }
 
@@ -42,7 +42,7 @@ class MatchScoreFieldsCalculatorTest {
     void playerBHasNullPointsIfTieBreak() {
         reachTieBreak();
 
-        String secondPlayerPoints = calculator.getSecondPlayerPoints(match);
+        String secondPlayerPoints = resolver.getSecondPlayerPoints(match);
         assertThat(secondPlayerPoints).isNull();
     }
 
@@ -58,7 +58,7 @@ class MatchScoreFieldsCalculatorTest {
 
         matchScore.increasePoint(Side.A);
 
-        String firstPlayerPoints = calculator.getFirstPlayerPoints(match);
+        String firstPlayerPoints = resolver.getFirstPlayerPoints(match);
         assertThat(firstPlayerPoints).isEqualTo("AD");
     }
 
@@ -74,7 +74,7 @@ class MatchScoreFieldsCalculatorTest {
 
         matchScore.increasePoint(Side.B);
 
-        String secondPlayerPoints = calculator.getSecondPlayerPoints(match);
+        String secondPlayerPoints = resolver.getSecondPlayerPoints(match);
         assertThat(secondPlayerPoints).isEqualTo("AD");
     }
 
@@ -90,7 +90,7 @@ class MatchScoreFieldsCalculatorTest {
 
         matchScore.increasePoint(Side.B);
 
-        String firstPlayerPoints = calculator.getFirstPlayerPoints(match);
+        String firstPlayerPoints = resolver.getFirstPlayerPoints(match);
         assertThat(firstPlayerPoints).isEqualTo("40");
     }
 
@@ -106,7 +106,7 @@ class MatchScoreFieldsCalculatorTest {
 
         matchScore.increasePoint(Side.A);
 
-        String secondPlayerPoints = calculator.getSecondPlayerPoints(match);
+        String secondPlayerPoints = resolver.getSecondPlayerPoints(match);
         assertThat(secondPlayerPoints).isEqualTo("40");
     }
 
@@ -115,7 +115,7 @@ class MatchScoreFieldsCalculatorTest {
         matchScore.increasePoint(Side.A);
         matchScore.increasePoint(Side.A);
 
-        String firstPlayerPoints = calculator.getFirstPlayerPoints(match);
+        String firstPlayerPoints = resolver.getFirstPlayerPoints(match);
         assertThat(firstPlayerPoints).isEqualTo("30");
     }
 
@@ -124,13 +124,13 @@ class MatchScoreFieldsCalculatorTest {
         matchScore.increasePoint(Side.B);
         matchScore.increasePoint(Side.B);
 
-        String secondPlayerPoints = calculator.getSecondPlayerPoints(match);
+        String secondPlayerPoints = resolver.getSecondPlayerPoints(match);
         assertThat(secondPlayerPoints).isEqualTo("30");
     }
 
     @Test
     void newMatchHasNoWinnerIfMatchIsStillPlayed() {
-        assertThat(calculator.getWinnerName(match)).isNull();
+        assertThat(resolver.getWinnerName(match)).isNull();
     }
 
     private void reachTieBreak() {
